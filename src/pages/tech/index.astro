@@ -1,0 +1,99 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import NetworkTopology from '../../components/NetworkTopology.astro';
+import { navigationStructure } from '../../data/navigation';
+import { brands } from '../../data/brands';
+
+const techNav = navigationStructure.find((n) => n.id === 'tech');
+const measuredBrands = brands.filter(b => b.hasSpeedtestImage);
+---
+
+<Layout
+  title="协议与网络实验室 | VLESS / Reality / Trojan / 晚高峰测速真机跑分 - 机场online"
+  description="【网络可观测实验室】深入 VLESS、Reality、Hysteria 2 传输协议底层加密与抗 DPI 封锁机制。展示 2026 批次 16 家机场真机晚高峰测速截图、丢包率与四级数据分级准则。"
+>
+  <div class="mb-8">
+    <div class="text-xs font-mono text-cyan-400 uppercase tracking-wider mb-2">
+      Network Science & Observatory · 协议与实测硬核专栏
+    </div>
+    <h1 class="text-3xl sm:text-4xl font-extrabold text-white">协议与网络实验室 (Network Observatory)</h1>
+    <p class="text-slate-300 text-sm mt-2 max-w-3xl leading-relaxed">
+      以计算机网络工程与密码学视角，拆解现代抗封锁代理技术。涵盖 VLESS-Reality 假面伪装、Hysteria 2 暴力 UDP 拥塞控制、IEPL 陆港专线物理路径，以及 16 家真机测速存证。
+    </p>
+
+    <!-- Subtopic Links -->
+    <div class="flex items-center space-x-3 mt-6">
+      <a href="/tech/protocols" class="px-4 py-2 rounded-lg bg-[#0b1322] border border-[#1f2e4a] hover:border-cyan-500/60 text-slate-200 text-xs font-mono">
+        🛡 传输协议与抗封锁技术专题 (VLESS / Reality) →
+      </a>
+      <a href="/tech/lab" class="px-4 py-2 rounded-lg bg-[#0b1322] border border-[#1f2e4a] hover:border-cyan-500/60 text-slate-200 text-xs font-mono">
+        🔬 晚高峰测速实验室与证据库 (16家图谱存证) →
+      </a>
+    </div>
+  </div>
+
+  <NetworkTopology brandName="全球专线网络传输链路标准" circuitType="三网BGP入口 + IEPL专线跨境" />
+
+  <!-- Observatory Data Ethics -->
+  <section class="bg-[#0b1322] border border-[#1f2e4a] rounded-xl p-6 my-10">
+    <h2 class="text-lg font-bold text-white mb-2">机场online 四级数据透明度标准</h2>
+    <p class="text-xs text-slate-400 leading-relaxed mb-6">
+      在网络评测领域，混淆“官方宣称参数”与“真机实测数据”是导致用户踩坑的核心原因。本站严格贯彻以下四级数据隔离标准：
+    </p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs font-mono">
+      <div class="bg-[#070c14] border border-emerald-900/60 p-4 rounded-lg">
+        <div class="text-emerald-400 font-bold mb-1">01. measured (实测)</div>
+        <p class="text-slate-300 text-[11px] leading-relaxed">
+          直接来源于测试机器人（如 MAI-TEST-BOT）直接生成的晚高峰测速截图、RTT 延迟、UDP/NAT 类型与跑分图谱。
+        </p>
+      </div>
+
+      <div class="bg-[#070c14] border border-blue-900/60 p-4 rounded-lg">
+        <div class="text-blue-400 font-bold mb-1">02. vendor (官方)</div>
+        <p class="text-slate-300 text-[11px] leading-relaxed">
+          来自机场官网、客户支持或服务商技术白皮书的公开信息（如套餐资费、节点数量、专属客户端说明）。
+        </p>
+      </div>
+
+      <div class="bg-[#070c14] border border-amber-900/60 p-4 rounded-lg">
+        <div class="text-amber-400 font-bold mb-1">03. commercial (商业)</div>
+        <p class="text-slate-300 text-[11px] leading-relaxed">
+          优惠码、返利链接、联盟营销政策与赞助活动说明，统一标注推广标识并进行利益回避。
+        </p>
+      </div>
+
+      <div class="bg-[#070c14] border border-purple-900/60 p-4 rounded-lg">
+        <div class="text-purple-400 font-bold mb-1">04. editorial (评估)</div>
+        <p class="text-slate-300 text-[11px] leading-relaxed">
+          编辑部结合架构原理、用户画像匹配、性价比考量与防跑路经验给出的中立选型建议。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Clusters Section -->
+  {techNav && (
+    <section class="bg-[#0b1322] border border-[#1f2e4a] rounded-xl p-6 my-10">
+      <h2 class="text-lg font-bold text-white mb-4">技术实验室知识集群 (40篇硬核文献)</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {techNav.subTopics.map((sub) => (
+          <div>
+            <h3 class="text-sm font-bold text-cyan-400 mb-2 font-mono">› {sub.title}</h3>
+            <ul class="space-y-1.5 text-xs text-slate-300">
+              {sub.clusters.flatMap((c) => c.articles).slice(0, 8).map((a) => (
+                <li class="flex items-center justify-between hover:text-cyan-300 py-0.5">
+                  <a href={`/articles/${a.slug}`} class="truncate pr-2 hover:text-cyan-400 hover:underline flex items-center space-x-1 text-slate-200">
+                    <span class="text-cyan-500 font-bold">·</span>
+                    <span class="truncate">{a.title}</span>
+                  </a>
+                  <span class="text-[10px] font-mono text-slate-500 shrink-0">{a.keyword}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </section>
+  )}
+</Layout>

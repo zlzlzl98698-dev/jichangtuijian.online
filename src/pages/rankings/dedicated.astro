@@ -1,0 +1,81 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import BrandCard from '../../components/BrandCard.astro';
+import NetworkTopology from '../../components/NetworkTopology.astro';
+import { brands } from '../../data/brands';
+import { navigationStructure } from '../../data/navigation';
+
+const dedicatedBrands = brands.filter((b) => 
+  b.circuitType.includes('专线') || 
+  b.circuitType.includes('IPLC') || 
+  b.circuitType.includes('IEPL') ||
+  b.id === 'guangsu' ||
+  b.id === 'muguang' ||
+  b.id === 'firefly' ||
+  b.id === 'shanyue'
+);
+
+const subTopic = navigationStructure[0].subTopics[1];
+---
+
+<Layout
+  title="顶级 IPLC/IEPL 专线机场推荐 2026 | 晚高峰0丢包与超低延迟天梯榜 - 机场online"
+  description="【企业外贸与电竞首选】2026顶级物理专线机场横向评测。光速云双专线架构、暮光加速BGP智能调度、Firefly原生骨干与闪跃纯IPLC专线深度对比。"
+>
+  <!-- Breadcrumb -->
+  <nav class="flex items-center space-x-2 text-xs font-mono text-slate-400 mb-6 pb-3 border-b border-slate-800">
+    <a href="/" class="hover:text-cyan-400">首页</a>
+    <span>›</span>
+    <a href="/rankings" class="hover:text-cyan-400">机场推荐榜单</a>
+    <span>›</span>
+    <span class="text-white">顶级 IPLC/IEPL 专线机场专题</span>
+  </nav>
+
+  <div class="mb-8">
+    <div class="text-xs font-mono text-cyan-400 uppercase tracking-wider mb-2">
+      Enterprise & Low Latency · 极致专线专区
+    </div>
+    <h1 class="text-3xl sm:text-4xl font-extrabold text-white">顶级 IPLC/IEPL 物理专线机场专题</h1>
+    <p class="text-slate-300 text-sm mt-2 max-w-3xl leading-relaxed">
+      采用企业级跨境内网专线（不经过公网 GFW），在晚高峰敏感时期依然能保持 0 丢包与毫秒级延迟。适合高要求外贸、TikTok 4K 直播、海外证券实时行情与外服竞技游戏直连。
+    </p>
+  </div>
+
+  <NetworkTopology brandName="顶级专线标准骨干网络" circuitType="IEPL / IPLC 内网直连" />
+
+  <!-- Brands Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
+    {dedicatedBrands.map((b) => (
+      <BrandCard brand={b} />
+    ))}
+  </div>
+
+  <!-- Clusters Section -->
+  <section class="bg-[#0b1322] border border-[#1f2e4a] rounded-xl p-6">
+    <h2 class="text-lg font-bold text-white mb-4">本专题下辖长尾深度知识集群 (20篇权威解答规划)</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {subTopic.clusters.map((c) => (
+        <div class="border-t border-slate-800 pt-3">
+          <h3 class="font-mono text-xs font-bold text-cyan-400 uppercase mb-1">
+            <a href={`/clusters/${c.id}`} class="hover:underline flex items-center space-x-1">
+              <span>#{c.name}</span>
+              <span class="text-[10px] text-slate-500 font-normal">→ 完整集群</span>
+            </a>
+          </h3>
+          <p class="text-xs text-slate-400 mb-3">{c.description}</p>
+          <ul class="space-y-1.5 text-xs">
+            {c.articles.map((a) => (
+              <li class="text-slate-300 flex items-center justify-between hover:text-cyan-300 py-0.5">
+                <a href={`/articles/${a.slug}`} class="truncate pr-2 hover:text-cyan-400 hover:underline flex items-center space-x-1 text-slate-200">
+                  <span class="text-cyan-500 font-bold">›</span>
+                  <span class="truncate">{a.title}</span>
+                </a>
+                <span class="text-[10px] font-mono text-slate-500 shrink-0">{a.keyword}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </section>
+</Layout>

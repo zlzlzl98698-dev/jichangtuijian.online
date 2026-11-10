@@ -1,0 +1,78 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import BrandCard from '../../components/BrandCard.astro';
+import { brands } from '../../data/brands';
+import { navigationStructure } from '../../data/navigation';
+
+const budgetBrands = brands.filter((b) => 
+  b.entryPrice.includes('5.') || 
+  b.entryPrice.includes('6') || 
+  b.entryPrice.includes('7') || 
+  b.entryPrice.includes('8') ||
+  b.entryPrice.includes('14') ||
+  b.entryPrice.includes('15') ||
+  b.id === 'guangsu'
+);
+
+const subTopic = navigationStructure[0].subTopics[0];
+---
+
+<Layout
+  title="高性价比平价机场推荐 2026 | 5-15元档便宜机场实测与避坑清单 - 机场online"
+  description="【平民学生党首选】2026年十元以内平价机场排行榜。包含光速云年付折合8元/月轻量版、微风网络、闪电鼠、大佬云、无忧链接等平民套餐的晚高峰测速与真实丢包率审计。"
+>
+  <!-- Breadcrumb -->
+  <nav class="flex items-center space-x-2 text-xs font-mono text-slate-400 mb-6 pb-3 border-b border-slate-800">
+    <a href="/" class="hover:text-cyan-400">首页</a>
+    <span>›</span>
+    <a href="/rankings" class="hover:text-cyan-400">机场推荐榜单</a>
+    <span>›</span>
+    <span class="text-white">高性价比平价机场专题</span>
+  </nav>
+
+  <div class="mb-8">
+    <div class="text-xs font-mono text-emerald-400 uppercase tracking-wider mb-2">
+      Budget & Affordable · 平民轻量专区
+    </div>
+    <h1 class="text-3xl sm:text-4xl font-extrabold text-white">高性价比平价机场推荐专题 (5-15元档)</h1>
+    <p class="text-slate-300 text-sm mt-2 max-w-3xl leading-relaxed">
+      谁说便宜没好货？我们通过真实探针与晚高峰测速，在全网筛选出带宽达标、不乱改倍率、运营超过 1-2 年以上的高性价比机场。主推光速云年付折合 8 元/月方案，兼顾微风网络、闪电鼠等入门神器。
+    </p>
+  </div>
+
+  <!-- Brands Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
+    {budgetBrands.map((b) => (
+      <BrandCard brand={b} />
+    ))}
+  </div>
+
+  <!-- Clusters Section -->
+  <section class="bg-[#0b1322] border border-[#1f2e4a] rounded-xl p-6">
+    <h2 class="text-lg font-bold text-white mb-4">本专题下辖长尾深度知识集群 (20篇权威解答规划)</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {subTopic.clusters.map((c) => (
+        <div class="border-t border-slate-800 pt-3">
+          <h3 class="font-mono text-xs font-bold text-cyan-400 uppercase mb-1">
+            <a href={`/clusters/${c.id}`} class="hover:underline flex items-center space-x-1">
+              <span>#{c.name}</span>
+              <span class="text-[10px] text-slate-500 font-normal">→ 完整集群</span>
+            </a>
+          </h3>
+          <p class="text-xs text-slate-400 mb-3">{c.description}</p>
+          <ul class="space-y-1.5 text-xs">
+            {c.articles.map((a) => (
+              <li class="text-slate-300 flex items-center justify-between hover:text-cyan-300 py-0.5">
+                <a href={`/articles/${a.slug}`} class="truncate pr-2 hover:text-cyan-400 hover:underline flex items-center space-x-1 text-slate-200">
+                  <span class="text-cyan-500 font-bold">›</span>
+                  <span class="truncate">{a.title}</span>
+                </a>
+                <span class="text-[10px] font-mono text-slate-500 shrink-0">{a.keyword}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </section>
+</Layout>

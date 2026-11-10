@@ -1,0 +1,51 @@
+---
+import type { UnlockStatus } from '../data/brands';
+
+export interface Props {
+  unlocks: UnlockStatus[];
+  brandName: string;
+}
+
+const { unlocks, brandName } = Astro.props;
+---
+
+<div class="bg-[#0b1322] border border-[#1f2e4a] rounded-xl p-5 my-6">
+  <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+    <div class="flex items-center space-x-2">
+      <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+      <h3 class="text-sm font-semibold text-white tracking-wide uppercase font-mono">
+        {brandName} · 流媒体与主流 AI 工具服务可用性矩阵 (Service Matrix)
+      </h3>
+    </div>
+    <span class="text-[11px] font-mono text-slate-500">检测标准：原生 IP / 住宅 IP 判定</span>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+    {unlocks.map((item) => (
+      <div class="bg-[#070c14] p-3 rounded-lg border border-slate-800/90 flex flex-col justify-between">
+        <div class="flex items-center justify-between mb-1">
+          <span class="font-medium text-xs text-slate-200">{item.service}</span>
+          {item.status === 'yes' ? (
+            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-950 text-emerald-400 border border-emerald-800 font-bold">
+              ✓ 完美解锁
+            </span>
+          ) : item.status === 'partial' ? (
+            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono bg-amber-950 text-amber-400 border border-amber-800">
+              ⚠ 视节点而定
+            </span>
+          ) : (
+            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono bg-rose-950 text-rose-400 border border-rose-800">
+              ✕ 暂未支持
+            </span>
+          )}
+        </div>
+        {item.note && (
+          <p class="text-[11px] font-mono text-slate-400 mt-1">{item.note}</p>
+        )}
+      </div>
+    ))}
+  </div>
+  <p class="text-[11px] font-mono text-slate-500 mt-3 pt-2 border-t border-slate-800/60">
+    * 注：OpenAI、Anthropic 及 Netflix 官方风控策略会动态更新 IP 黑名单；若偶发不可用，可在客户端内切换至香港、新加坡或日本其他落地节点。
+  </p>
+</div>

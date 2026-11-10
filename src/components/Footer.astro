@@ -1,0 +1,79 @@
+---
+import { navigationStructure } from '../data/navigation';
+---
+
+<footer class="border-t border-[#1f2e4a] bg-[#050910] text-slate-400 text-xs mt-20">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Top Grid: Sitemap Navigation Matrix -->
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 mb-12">
+      {navigationStructure.map((cat) => (
+        <div>
+          <h3 class="text-white font-semibold text-sm mb-3 flex items-center space-x-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
+            <a href={cat.slug} class="hover:text-cyan-300 transition-colors">{cat.title}</a>
+          </h3>
+          <ul class="space-y-2 font-mono text-[11px]">
+            {cat.subTopics.map((sub) => (
+              <li>
+                <a href={sub.slug} class="hover:text-slate-200 transition-colors block py-0.5">
+                  {sub.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+      <div>
+        <h3 class="text-white font-semibold text-sm mb-3 flex items-center space-x-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+          <span class="text-amber-300">选型避坑专栏</span>
+        </h3>
+        <ul class="space-y-2 font-mono text-[11px]">
+          <li><a href="/best-airports" class="hover:text-slate-200 transition-colors block py-0.5">42家机场全景选型</a></li>
+          <li><a href="/trial" class="hover:text-slate-200 transition-colors block py-0.5">免费与1元试用清单</a></li>
+          <li><a href="/scam-radar" class="hover:text-slate-200 transition-colors block py-0.5">跑路预警避险雷达</a></li>
+          <li><a href="/free-nodes" class="hover:text-slate-200 transition-colors block py-0.5">免费节点安全实测</a></li>
+          <li><a href="/faq" class="hover:text-slate-200 transition-colors block py-0.5">机场百科FAQ辞典</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Middle Box: Compliance, Affiliate Disclosure & Data Ethics -->
+    <div class="bg-[#0b1322] border border-[#1f2e4a] rounded-xl p-5 mb-8">
+      <div class="flex items-center space-x-2 text-cyan-400 font-mono text-xs uppercase mb-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+        </svg>
+        <span>透明度宣言与合规收益声明 (Affiliate Disclosure)</span>
+      </div>
+      <p class="text-slate-300 leading-relaxed text-xs mb-3">
+        本站部分链接为包含推广代码的商业返利链接（Affiliate Links）。当您通过本站链接前往相关服务商注册或付费时，本站可能会获得服务商支付的一定比例佣金，该机制用于支持本站 7×24 小时全球测速探针、服务器带宽及技术内容研发，<strong class="text-white">绝不增加您任何额外的支付费用</strong>。
+      </p>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] font-mono pt-3 border-t border-slate-800">
+        <div><span class="text-emerald-400 font-semibold">[measured 实测]</span>：真实机房截屏指标</div>
+        <div><span class="text-blue-400 font-semibold">[vendor 官方]</span>：官网公告与客服数据</div>
+        <div><span class="text-amber-400 font-semibold">[commercial 商业]</span>：优惠码及推广入口</div>
+        <div><span class="text-purple-400 font-semibold">[editorial 评估]</span>：中立编辑综合评选</div>
+      </div>
+    </div>
+
+    <!-- Bottom: Copyright & Infrastructure Info -->
+    <div class="pt-6 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-500 space-y-3 sm:space-y-0">
+      <div>
+        <span>© 2026 机场online (jichangtuijian.online). 保留所有权利。</span>
+        <span class="mx-2">·</span>
+        <span>Astro 5.x 静态生成 + Apache 部署</span>
+      </div>
+      <div class="flex items-center space-x-4 font-mono">
+        <span class="flex items-center space-x-1 text-emerald-400">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>NOC 可观测性正常</span>
+        </span>
+        <a href="/about" class="hover:text-slate-300">关于实验室</a>
+        <a href="/methodology" class="hover:text-slate-300">评测方法论</a>
+        <a href="/sitemap-index.xml" class="hover:text-slate-300" target="_blank">XML Sitemap</a>
+        <a href="/tech/lab" class="hover:text-slate-300">测速证据中心</a>
+      </div>
+    </div>
+  </div>
+</footer>

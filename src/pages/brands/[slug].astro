@@ -1,0 +1,518 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import UnlockMatrix from '../../components/UnlockMatrix.astro';
+import NetworkTopology from '../../components/NetworkTopology.astro';
+import { brands, type Brand } from '../../data/brands';
+import { clientPlatforms } from '../../data/clients';
+import { brandAudits } from '../../data/brandAudits';
+
+export function getStaticPaths() {
+  return brands.map((brand) => ({
+    params: { slug: brand.id },
+    props: { brand }
+  }));
+}
+
+export interface Props {
+  brand: Brand;
+}
+
+const { brand } = Astro.props;
+const audit = brandAudits[brand.id] || {
+  section1_background: '',
+  section2_topology: '',
+  section3_speedtest: '',
+  section4_streaming_ai: '',
+  section5_pricing: '',
+  section6_clients: '',
+  section7_refund_risk: '',
+  section8_verdict: ''
+};
+
+function formatAuditText(raw: string) {
+  if (!raw) return '';
+  return raw
+    .replace(/^### (.*$)/gim, '<h3 class="text-xl font-bold text-white mt-8 mb-4 flex items-center space-x-2"><span class="w-2 h-2 rounded-full bg-cyan-400"></span><span>$1</span></h3>')
+    .replace(/^#### (.*$)/gim, '<h4 class="text-base font-semibold text-cyan-300 mt-6 mb-2 font-mono">$1</h4>')
+    .replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-semibold">$1</strong>')
+    .replace(/^\- (.*$)/gim, '<li class="flex items-start space-x-2 my-1 text-slate-300 text-xs sm:text-sm leading-relaxed"><span class="text-cyan-400 mt-0.5 font-bold">›</span><span>$1</span></li>')
+    .split('\n\n')
+    .map(p => {
+      const trimmed = p.trim();
+      if (!trimmed) return '';
+      if (trimmed.startsWith('<h') || trimmed.startsWith('<li')) return trimmed;
+      return `<p class="my-3 text-slate-300 text-xs sm:text-sm leading-relaxed">${trimmed}</p>`;
+    })
+    .join('');
+}
+
+// Peer brands for comparison
+const peerBrands = brands.filter((b) => b.id !== brand.id).slice(0, 4);
+
+// Schema.org structured data
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": brand.seoTitle,
+  "description": brand.metaDescription,
+  "datePublished": "2026-08-11T14:00:00+08:00",
+  "dateModified": "2026-10-19T18:00:00+08:00",
+  "author": {
+    "@type": "Organization",
+    "name": "机场online 网络实验室",
+    "url": "https://jichangtuijian.online"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "机场online",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://jichangtuijian.online/logo.png"
+    }
+  }
+};
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": brand.faq.map((f) => ({
+    "@type": "Question",
+    "name": f.q,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": f.a
+    }
+  }))
+};
+---
+
+<Layout
+  title={brand.seoTitle}
+  description={brand.metaDescription}
+  canonical={`https://jichangtuijian.online/brands/${brand.id}`}
+  ogType="article"
+  schema={{
+    "@graph": [articleSchema, faqSchema]
+  }}
+>
+  <!-- Breadcrumb -->
+  <nav class="flex items-center space-x-2 text-xs font-mono text-slate-400 mb-6 pb-3 border-b border-slate-800">
+    <a href="/" class="hover:text-cyan-400">首页</a>
+    <span>›</span>
+    <a href="/brands" class="hover:text-cyan-400">42强品牌评测</a>
+    <span>›</span>
+    <span class="text-white">{brand.name}</span>
+  </nav>
+
+  <!-- Brand Review Header -->
+  <header class="bg-[#0b1322] border border-[#1f2e4a] rounded-2xl p-6 sm:p-8 mb-8 relative overflow-hidden">
+    <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+      <div class="flex items-center space-x-3">
+        <span class={`font-mono font-bold text-sm px-2.5 py-1 rounded ${
+          brand.ranking === 1 ? 'bg-amber-400 text-slate-950 font-black' : 'bg-slate-800 text-slate-300'
+        }`}>
+          排名 #{brand.ranking}
+        </span>
+        <h1 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
+          {brand.name} 深度测评与使用指南
+        </h1>
+      </div>
+
+      <div class="flex items-center space-x-2 font-mono text-xs shrink-0">
+        <span class="px-2.5 py-1 rounded bg-cyan-950 text-cyan-400 border border-cyan-800 whitespace-nowrap shrink-0">
+          {brand.badge}
+        </span>
+        {brand.hasSpeedtestImage ? (
+          <span class="px-2.5 py-1 rounded bg-emerald-950 text-emerald-400 border border-emerald-800 flex items-center space-x-1 whitespace-nowrap shrink-0">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>实测数据存证</span>
+          </span>
+        ) : (
+          <span class="px-2.5 py-1 rounded bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap shrink-0">
+            官方规格审计
+          </span>
+        )}
+      </div>
+    </div>
+
+    <p class="text-sm sm:text-base text-slate-300 leading-relaxed mb-6">
+      {brand.summary}
+    </p>
+
+    <!-- Quick Attributes Dashboard -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3 p-4 rounded-xl bg-[#070c14]/80 border border-slate-800 font-mono text-xs mb-6">
+      <div>
+        <span class="text-slate-500 text-[10px] block uppercase">入门计费</span>
+        <span class="text-cyan-400 font-semibold">{brand.entryPrice}</span>
+      </div>
+      <div>
+        <span class="text-slate-500 text-[10px] block uppercase">线路类型</span>
+        <span class="text-slate-200">{brand.circuitType}</span>
+      </div>
+      <div>
+        <span class="text-slate-500 text-[10px] block uppercase">加密协议</span>
+        <span class="text-slate-200">{brand.protocol}</span>
+      </div>
+      <div>
+        <span class="text-slate-500 text-[10px] block uppercase">运营年限</span>
+        <span class="text-slate-200">{brand.foundedYear} 年开始</span>
+      </div>
+      <div>
+        <span class="text-slate-500 text-[10px] block uppercase">并发设备</span>
+        <span class="text-slate-200 truncate">{brand.devices.split(' ')[0]}</span>
+      </div>
+      <div>
+        <span class="text-slate-500 text-[10px] block uppercase">客户端生态</span>
+        <span class="text-slate-200 truncate">{brand.clientSupport.split(' ')[0]}</span>
+      </div>
+    </div>
+
+    <!-- CTA & Coupon Action Bar -->
+    <div class="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-slate-800">
+      <div class="flex items-center space-x-3">
+        {brand.couponCode ? (
+          <div class="flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-amber-950/60 border border-amber-800/80 text-amber-300 font-mono text-xs">
+            <span>优惠码:</span>
+            <strong class="text-white text-sm tracking-wider">{brand.couponCode}</strong>
+            {brand.couponDiscount && <span class="text-amber-400">({brand.couponDiscount})</span>}
+          </div>
+        ) : (
+          <span class="text-xs font-mono text-slate-500">当前套餐为直购标价，暂无额外公开优惠码</span>
+        )}
+      </div>
+
+      <div class="flex items-center space-x-3">
+        {brand.affiliateUrl && (
+          <a
+            href={brand.affiliateUrl}
+            target="_blank"
+            rel="nofollow sponsored noopener"
+            class="px-6 py-2.5 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-xs shadow-lg shadow-cyan-500/25 transition-all hover:scale-105 flex items-center space-x-1.5"
+          >
+            <span>访问 {brand.name} 官网注册</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
+          </a>
+        )}
+      </div>
+    </div>
+  </header>
+
+  <!-- Section 1: Measured Speedtest & Performance Observatory -->
+  <section class="my-10" id="speedtest">
+    <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center space-x-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+        <h2 class="text-xl font-bold text-white">01. 真实节点测速与晚高峰可观测性数据</h2>
+      </div>
+      <span class="text-xs font-mono text-slate-500">
+        批次时间：{brand.testedAt || '2026-08-11 CST'}
+      </span>
+    </div>
+
+    <!-- Speedtest numbers table -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 font-mono text-xs mb-6">
+      {brand.speedtests.map((st) => (
+        <div class="bg-[#0b1322] border border-slate-800 p-3.5 rounded-xl">
+          <div class="text-slate-400 text-xs truncate mb-1">{st.region}</div>
+          <div class="text-xl font-bold text-emerald-400">{st.download}</div>
+          <div class="text-slate-500 text-[11px] mt-0.5">TLS RTT 延迟: {st.latency}</div>
+        </div>
+      ))}
+    </div>
+
+    <!-- Speedtest Screenshot Display if available -->
+    {brand.speedtestImage ? (
+      <div class="bg-[#070c14] border border-[#1f2e4a] rounded-xl p-4 sm:p-6 mb-6">
+        <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-3 pb-2 border-b border-slate-800">
+          <div class="flex items-center space-x-2">
+            <span class="text-emerald-400 font-bold">[measured 原始测速截图证据]</span>
+            <span>分辨率: 1122 × 1402 px</span>
+          </div>
+          <span class="text-slate-500">测试环境: 珠海联通 5G/9G 骨干网 32线程</span>
+        </div>
+        <div class="overflow-hidden rounded-lg border border-slate-800 bg-slate-950/80 flex justify-center">
+          <img
+            src={brand.speedtestImage}
+            alt={`${brand.name} 2026节点测速实测图`}
+            class="max-h-[600px] w-auto object-contain hover:scale-[1.02] transition-transform duration-300 cursor-zoom-in"
+            loading="lazy"
+            onclick="window.open(this.src, '_blank')"
+          />
+        </div>
+        <p class="text-[11px] font-mono text-slate-500 text-center mt-3">
+          * 提示：点击图片可在新标签页查看 100% 原始高分辨率跑分详情。测试结果仅反映当时节点工况，不代表永续性绝对速率。
+        </p>
+      </div>
+    ) : (
+      <div class="bg-[#0b1322] border border-slate-800 rounded-xl p-6 mb-6 text-slate-400 text-xs leading-relaxed">
+        <p class="font-bold text-slate-300 mb-2 font-mono">关于本品牌的测速数据采集说明：</p>
+        <p>
+          {brand.name} 未在 2026-08 批次的真机截图归档中。上述表格数值来源于品牌官方公开规格书、用户实机反馈与历史抽样记录。本站坚持“没有直接截图证明的数据不强行贴图”原则，确保数据诚实透明。
+        </p>
+      </div>
+    )}
+
+    <!-- Extra evidence photos for Guangsu -->
+    {brand.evidenceImages && brand.evidenceImages.length > 0 && (
+      <div class="my-6">
+        <h3 class="text-sm font-mono text-cyan-400 uppercase tracking-wider mb-3">
+          光速云网络实验室现场实录多节点解锁证据图集 ({brand.evidenceImages.length} 张)
+        </h3>
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+          {brand.evidenceImages.map((imgUrl, idx) => (
+            <div class="bg-[#0b1322] border border-slate-800 rounded-lg overflow-hidden group">
+              <img
+                src={imgUrl}
+                alt={`光速云测试实录图 ${idx + 1}`}
+                class="w-full h-32 object-cover group-hover:scale-105 transition-transform cursor-pointer"
+                loading="lazy"
+                onclick="window.open(this.src, '_blank')"
+              />
+              <div class="p-1.5 text-center text-[10px] font-mono text-slate-400">实录证据 0{idx + 1}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+  </section>
+
+  <!-- Section 2: Network Topology & Circuit Analysis -->
+  <section class="my-10">
+    <div class="flex items-center space-x-2 mb-4">
+      <span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
+      <h2 class="text-xl font-bold text-white">02. 专线技术规格与网络拓扑架构</h2>
+    </div>
+    <NetworkTopology brandName={brand.name} circuitType={brand.circuitType} />
+
+    <div class="prose prose-invert max-w-none text-slate-300 text-sm leading-relaxed space-y-4 mt-4">
+      <p>
+        在国际出海链路中，<strong class="text-white">{brand.name}</strong> 采用了以 <code class="text-cyan-300 font-mono">{brand.circuitType}</code> 为基础的传输通路。其核心技术亮点在于避开了公网出口的敏感深包检测（DPI），流量在进入国内入口节点后直接封装加密，通过国内骨干机房进行跨境光缆直连落地。
+      </p>
+      <p>
+        节点覆盖地区包括：{brand.nodeLocations.join('、')} 等关键网络中枢。无论是用于个人日常 Google 查阅文献，还是用于团队跨境电商（TikTok 直播与海外社媒多账号矩阵运营），均能提供稳定的 TCP/UDP 传输支撑。
+      </p>
+    </div>
+  </section>
+
+  <!-- Section 3: Streaming & AI Unlock Matrix -->
+  <section class="my-10">
+    <div class="flex items-center space-x-2 mb-4">
+      <span class="w-2.5 h-2.5 rounded-full bg-purple-400"></span>
+      <h2 class="text-xl font-bold text-white">03. 海外流媒体与 AI 大模型支持度审计</h2>
+    </div>
+    <UnlockMatrix unlocks={brand.unlocks} brandName={brand.name} />
+  </section>
+
+  <!-- Section 4: Packages & Pricing Breakdown -->
+  <section class="my-10">
+    <div class="flex items-center space-x-2 mb-4">
+      <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+      <h2 class="text-xl font-bold text-white">04. 官方套餐定价与资费性价比评估</h2>
+    </div>
+
+    <div class="overflow-x-auto rounded-xl border border-[#1f2e4a] bg-[#0b1322] mb-6">
+      <table class="w-full text-left text-xs font-mono">
+        <thead class="bg-[#070c14] border-b border-slate-800 text-slate-400 uppercase">
+          <tr>
+            <th class="py-3 px-4">套餐名称</th>
+            <th class="py-3 px-4">计费周期</th>
+            <th class="py-3 px-4">价格</th>
+            <th class="py-3 px-4">流量额度</th>
+            <th class="py-3 px-4">重置周期</th>
+            <th class="py-3 px-4 text-right">选购建议</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-800/80 text-slate-300">
+          {brand.plans.map((p, idx) => (
+            <tr class="hover:bg-slate-800/40">
+              <td class="py-3 px-4 font-bold text-white">{p.name}</td>
+              <td class="py-3 px-4 text-slate-400">{p.billing}</td>
+              <td class="py-3 px-4 text-cyan-400 font-semibold">{p.price}</td>
+              <td class="py-3 px-4 text-emerald-400">{p.traffic}</td>
+              <td class="py-3 px-4 text-slate-400">{p.period}</td>
+              <td class="py-3 px-4 text-right text-slate-400">
+                {idx === 0 ? '入门优选' : idx === 1 ? '主力推荐' : '重度需求'}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Section: Deep Technical Whitepaper & Dossier (万字级网络实验室权威审计专栏) -->
+  <section class="my-12 pt-8 border-t border-[#1f2e4a]">
+    <div class="bg-gradient-to-r from-cyan-950/40 via-[#0b1322] to-blue-950/40 border border-cyan-800/50 rounded-2xl p-6 sm:p-8 mb-8">
+      <div class="flex items-center space-x-2 text-cyan-400 font-mono text-xs uppercase mb-2">
+        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+        <span>Observatory Dossier · 万字级权威技术白皮书</span>
+      </div>
+      <h2 class="text-2xl sm:text-3xl font-extrabold text-white mb-2">
+        {brand.name} 网络工程与可观测性深度审计报告
+      </h2>
+      <p class="text-xs sm:text-sm text-slate-300">
+        本报告由机场online网络可观测实验室出具，基于物理光缆拓扑拆解、晚高峰丢包抖动采集、AI与流媒体真实探针检测及商业条款透明度审计，全景还原真实技术底色。
+      </p>
+    </div>
+
+    <!-- 8 In-Depth Audit Chapters -->
+    <div class="space-y-8 bg-[#0b1322] border border-[#1f2e4a] rounded-2xl p-6 sm:p-8">
+      <div class="border-b border-slate-800 pb-6" set:html={formatAuditText(audit.section1_background)} />
+      <div class="border-b border-slate-800 pb-6" set:html={formatAuditText(audit.section2_topology)} />
+      <div class="border-b border-slate-800 pb-6" set:html={formatAuditText(audit.section3_speedtest)} />
+      <div class="border-b border-slate-800 pb-6" set:html={formatAuditText(audit.section4_streaming_ai)} />
+      <div class="border-b border-slate-800 pb-6" set:html={formatAuditText(audit.section5_pricing)} />
+      <div class="border-b border-slate-800 pb-6" set:html={formatAuditText(audit.section6_clients)} />
+      <div class="border-b border-slate-800 pb-6" set:html={formatAuditText(audit.section7_refund_risk)} />
+      <div set:html={formatAuditText(audit.section8_verdict)} />
+    </div>
+  </section>
+
+  <!-- Section 5: Pros, Cons, and Risk Warnings -->
+  <section class="my-10">
+    <div class="flex items-center space-x-2 mb-4">
+      <span class="w-2.5 h-2.5 rounded-full bg-rose-400"></span>
+      <h2 class="text-xl font-bold text-white">05. 核心优缺点与客观风险提示</h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+      <!-- Pros -->
+      <div class="bg-[#0b1322] border border-emerald-900/50 rounded-xl p-5">
+        <h3 class="font-bold text-sm text-emerald-400 flex items-center space-x-2 mb-3">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+          <span>核心优势与亮点</span>
+        </h3>
+        <ul class="space-y-2 text-xs text-slate-300">
+          {brand.pros.map((pro) => (
+            <li class="flex items-start space-x-2">
+              <span class="text-emerald-400 font-bold">✓</span>
+              <span>{pro}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Cons -->
+      <div class="bg-[#0b1322] border border-rose-900/50 rounded-xl p-5">
+        <h3 class="font-bold text-sm text-rose-400 flex items-center space-x-2 mb-3">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          <span>客观局限与风险</span>
+        </h3>
+        <ul class="space-y-2 text-xs text-slate-300">
+          {brand.cons.map((con) => (
+            <li class="flex items-start space-x-2">
+              <span class="text-rose-400 font-bold">✕</span>
+              <span>{con}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+
+    <!-- Transparent Warning Box -->
+    <div class="bg-amber-950/20 border border-amber-800/60 rounded-xl p-4 text-xs font-mono text-amber-300 flex items-start space-x-3">
+      <svg class="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <div>
+        <strong class="text-white block mb-0.5">理性消费与合规预警：</strong>
+        <span>{brand.riskWarning}</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 6: Persona Matching & Peer Comparison -->
+  <section class="my-10">
+    <div class="flex items-center space-x-2 mb-4">
+      <span class="w-2.5 h-2.5 rounded-full bg-blue-400"></span>
+      <h2 class="text-xl font-bold text-white">06. 适用人群画像与同价位横向对比</h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+      <div class="bg-[#0b1322] border border-slate-800 rounded-xl p-5">
+        <h3 class="text-sm font-bold text-white mb-3">最适合谁用：</h3>
+        <ul class="space-y-2 text-xs text-slate-300">
+          {brand.suitableFor.map((s) => (
+            <li class="flex items-center space-x-2">
+              <span class="text-cyan-400">›</span>
+              <span>{s}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div class="bg-[#0b1322] border border-slate-800 rounded-xl p-5">
+        <h3 class="text-sm font-bold text-white mb-3">不适合谁用：</h3>
+        <ul class="space-y-2 text-xs text-slate-300">
+          {brand.unsuitableFor.map((u) => (
+            <li class="flex items-center space-x-2">
+              <span class="text-slate-500">›</span>
+              <span>{u}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+
+    <div class="bg-[#0b1322] border border-slate-800 rounded-xl p-5 text-xs text-slate-300 leading-relaxed">
+      <h3 class="font-bold text-sm text-white mb-2 font-mono">横向竞品对比判断：</h3>
+      <p>{brand.peerComparison}</p>
+    </div>
+  </section>
+
+  <!-- Section 7: FAQ Accordion -->
+  <section class="my-10">
+    <div class="flex items-center space-x-2 mb-4">
+      <span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
+      <h2 class="text-xl font-bold text-white">07. 常见问答 FAQ (可检索知识实体)</h2>
+    </div>
+
+    <div class="space-y-3">
+      {brand.faq.map((item) => (
+        <div class="bg-[#0b1322] border border-slate-800 rounded-xl p-4">
+          <h3 class="text-sm font-bold text-white flex items-center space-x-2 mb-2">
+            <span class="text-cyan-400 font-mono">Q:</span>
+            <span>{item.q}</span>
+          </h3>
+          <p class="text-xs text-slate-300 leading-relaxed pl-5">
+            {item.a}
+          </p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Section 8: Honeycomb Internal Links -->
+  <section class="my-12 pt-8 border-t border-[#1f2e4a]">
+    <div class="text-xs font-mono text-cyan-400 uppercase tracking-wider mb-2">
+      Honeycomb Internal Links · 蜂巢内链体系
+    </div>
+    <h3 class="text-lg font-bold text-white mb-4">相关机场与客户端配置进阶推荐</h3>
+
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 font-mono text-xs mb-6">
+      {peerBrands.map((pb) => (
+        <a href={`/brands/${pb.id}`} class="bg-[#0b1322] border border-slate-800 hover:border-cyan-500/40 p-3 rounded-lg block transition-colors">
+          <div class="text-slate-400 text-[10px]">竞品参考 #{pb.ranking}</div>
+          <div class="font-bold text-white mt-0.5 truncate">{pb.name}</div>
+          <div class="text-cyan-400 text-[11px] mt-1">{pb.entryPrice}</div>
+        </a>
+      ))}
+    </div>
+
+    <div class="flex flex-wrap items-center gap-2 text-xs font-mono text-slate-400">
+      <span>客户端指南：</span>
+      <a href="/clients#windows" class="text-cyan-400 hover:underline">Clash Verge Rev Windows教程</a>
+      <span>·</span>
+      <a href="/clients#ios" class="text-cyan-400 hover:underline">Shadowrocket 小火箭配置</a>
+      <span>·</span>
+      <a href="/scenarios/ai" class="text-cyan-400 hover:underline">ChatGPT 专用节点防封指南</a>
+      <span>·</span>
+      <a href="/rankings/budget" class="text-cyan-400 hover:underline">十元以内平价机场排行榜</a>
+    </div>
+  </section>
+</Layout>

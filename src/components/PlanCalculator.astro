@@ -1,0 +1,163 @@
+---
+// Interactive Airport Plan Matching Calculator
+---
+
+<div class="bg-gradient-to-br from-[#0c1626] to-[#070c14] border border-cyan-500/40 rounded-2xl p-6 sm:p-8 my-10 shadow-xl shadow-cyan-500/5">
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-4 mb-6">
+    <div>
+      <div class="flex items-center space-x-2 text-cyan-400 font-mono text-xs uppercase mb-1">
+        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+        <span>AI Smart Matcher · 智能预算与需求选型计算器</span>
+      </div>
+      <h3 class="text-xl sm:text-2xl font-extrabold text-white">
+        输入您的月预算与核心场景，1秒匹配最佳专线方案
+      </h3>
+    </div>
+    <span class="text-xs font-mono text-slate-400">基于 42 品牌 120+ 套餐算力模型</span>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+    <!-- Question 1: Budget Range -->
+    <div>
+      <label class="block text-xs font-mono text-slate-300 uppercase mb-2">1. 您预期的月度支出预算：</label>
+      <div class="grid grid-cols-2 gap-2 text-xs font-mono" id="budget-options">
+        <button type="button" class="calc-btn active px-3 py-2.5 rounded-lg border border-cyan-500 bg-cyan-950/80 text-cyan-300 font-medium text-left truncate" data-type="budget" data-val="entry">
+          ¥8-15/月 · 平价入门
+        </button>
+        <button type="button" class="calc-btn px-3 py-2.5 rounded-lg border border-slate-800 bg-[#070c14] text-slate-400 hover:text-white text-left truncate" data-type="budget" data-val="standard">
+          ¥20-35/月 · 主力专线
+        </button>
+        <button type="button" class="calc-btn px-3 py-2.5 rounded-lg border border-slate-800 bg-[#070c14] text-slate-400 hover:text-white text-left truncate" data-type="budget" data-val="enterprise">
+          ¥50-100+/月 · 商务重度
+        </button>
+        <button type="button" class="calc-btn px-3 py-2.5 rounded-lg border border-slate-800 bg-[#070c14] text-slate-400 hover:text-white text-left truncate" data-type="budget" data-val="lifetime">
+          一次性付费 · 永久买断
+        </button>
+      </div>
+    </div>
+
+    <!-- Question 2: Primary Scenario -->
+    <div>
+      <label class="block text-xs font-mono text-slate-300 uppercase mb-2">2. 您的核心网络使用场景：</label>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs font-mono" id="scenario-options">
+        <button type="button" class="calc-btn active px-3 py-2.5 rounded-lg border border-cyan-500 bg-cyan-950/80 text-cyan-300 font-medium text-left truncate" data-type="scenario" data-val="ai">
+          🤖 ChatGPT / Claude
+        </button>
+        <button type="button" class="calc-btn px-3 py-2.5 rounded-lg border border-slate-800 bg-[#070c14] text-slate-400 hover:text-white text-left truncate" data-type="scenario" data-val="stream">
+          🎬 4K 奈飞 / 影音追剧
+        </button>
+        <button type="button" class="calc-btn px-3 py-2.5 rounded-lg border border-slate-800 bg-[#070c14] text-slate-400 hover:text-white text-left truncate" data-type="scenario" data-val="cross">
+          📦 TikTok 跨境 / 外贸
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dynamic Result Card -->
+  <div id="calc-result" class="bg-[#070c14] border border-cyan-500/40 rounded-xl p-5 sm:p-6 transition-all">
+    <!-- Populated via script -->
+  </div>
+</div>
+
+<script is:inline>
+  let currentBudget = 'entry';
+  let currentScenario = 'ai';
+
+  const recommendations = {
+    'entry': {
+      brand: '光速云 (轻量版) / 微风网络',
+      badge: '★ 综合首推性价比王者',
+      price: '¥99 / 年付 (折合约 ¥8.25/月)',
+      traffic: '69GB / 每月',
+      circuit: 'IEPL专线 + 企业内网双专线',
+      desc: '在这个价位段，光速云年付轻量版打破了平价机场只能走公网中转的劣势，提供 2020 老牌双专线保障。日常用于 ChatGPT 4o 查阅资料及 4K 视频缓冲毫无压力。',
+      link: '/brands/guangsu',
+      aff: 'https://sahude.gsyvipaff.com/#/?code=keqgvT5Y'
+    },
+    'standard': {
+      brand: '光速云 (极速版) / 暮光加速',
+      badge: '★ 2026 年度主力旗舰推荐',
+      price: '¥25 / 月付',
+      traffic: '168GB / 每月',
+      circuit: '全球 IPLC 物理专线 · 全节点 1倍率',
+      desc: '专为高频 AI 创作者（ChatGPT/Claude 3.5）、海外电商运营与 4K HDR 影音打造。最高 2.5Gbps 带宽，晚高峰 0 丢包，不限制同时在线设备数量。',
+      link: '/brands/guangsu',
+      aff: 'https://sahude.gsyvipaff.com/#/?code=keqgvT5Y'
+    },
+    'enterprise': {
+      brand: '光速云 (量子版/定制版) / SOGO云',
+      badge: '★ 企业跨境与团队重度协作款',
+      price: '¥68 - ¥680 / 月',
+      traffic: '568GB - 500GB 独享原生IP',
+      circuit: '企业定制物理专线 · 原生独立IP隔离',
+      desc: '满足跨境电商多店铺运营、TikTok 美区与东南亚直播推流、大型团队协同办公的高要求业务，防关联与隐私隔离更强。',
+      link: '/brands/guangsu',
+      aff: 'https://sahude.gsyvipaff.com/#/?code=keqgvT5Y'
+    },
+    'lifetime': {
+      brand: '光速云 · 致敬斯诺克 147 永久套餐',
+      badge: '★ 一次付费 · 永久资产不过期',
+      price: '¥147 (一次性付费)',
+      traffic: '247GB 永久有效不过期',
+      circuit: '原生稳定专线 · 单节点最高 2.5Gbps',
+      desc: '适合经常出差、日常使用频率不高、不想按月重复续费的轻度用户。买断制资产包，用几年都不浪费，是公认的备用神器。',
+      link: '/brands/guangsu',
+      aff: 'https://sahude.gsyvipaff.com/#/?code=keqgvT5Y'
+    }
+  };
+
+  function updateResult() {
+    const res = recommendations[currentBudget] || recommendations['standard'];
+    const container = document.getElementById('calc-result');
+    if (!container) return;
+
+    container.innerHTML = `
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
+        <div class="flex items-center space-x-2">
+          <span class="text-xs font-mono font-bold px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+            ${res.badge}
+          </span>
+          <h4 class="text-lg font-bold text-white">${res.brand}</h4>
+        </div>
+        <div class="text-right">
+          <span class="text-cyan-400 font-bold font-mono text-base">${res.price}</span>
+          <span class="text-slate-500 font-mono text-xs block">${res.traffic} · ${res.circuit}</span>
+        </div>
+      </div>
+      <p class="text-xs text-slate-300 leading-relaxed mb-4">${res.desc}</p>
+      <div class="flex items-center justify-between pt-3 border-t border-slate-800 text-xs font-mono">
+        <a href="${res.link}" class="text-slate-400 hover:text-white underline">
+          查看该方案万字实测白皮书 →
+        </a>
+        <a href="${res.aff}" target="_blank" rel="nofollow sponsored noopener" class="px-4 py-1.5 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 text-white font-bold text-xs shadow-md shadow-cyan-500/20">
+          立即前往官方直达开通 ↗
+        </a>
+      </div>
+    `;
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    updateResult();
+    const buttons = document.querySelectorAll('.calc-btn');
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const type = btn.getAttribute('data-type');
+        const val = btn.getAttribute('data-val');
+        if (type === 'budget') {
+          currentBudget = val;
+          document.querySelectorAll('#budget-options .calc-btn').forEach(b => {
+            b.className = 'calc-btn px-3 py-2 rounded-lg border border-slate-800 bg-[#070c14] text-slate-400 hover:text-white';
+          });
+          btn.className = 'calc-btn active px-3 py-2 rounded-lg border border-cyan-500 bg-cyan-950/80 text-cyan-300 font-medium';
+        } else if (type === 'scenario') {
+          currentScenario = val;
+          document.querySelectorAll('#scenario-options .calc-btn').forEach(b => {
+            b.className = 'calc-btn px-3 py-2 rounded-lg border border-slate-800 bg-[#070c14] text-slate-400 hover:text-white';
+          });
+          btn.className = 'calc-btn active px-3 py-2 rounded-lg border border-cyan-500 bg-cyan-950/80 text-cyan-300 font-medium';
+        }
+        updateResult();
+      });
+    });
+  });
+</script>

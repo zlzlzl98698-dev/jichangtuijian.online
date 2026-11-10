@@ -1,0 +1,116 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import BrandCard from '../../components/BrandCard.astro';
+import { navigationStructure, type Cluster, type SubTopic, type NavCategory } from '../../data/navigation';
+import { brands } from '../../data/brands';
+
+export function getStaticPaths() {
+  const paths: any[] = [];
+  navigationStructure.forEach((cat) => {
+    cat.subTopics.forEach((sub) => {
+      sub.clusters.forEach((cluster) => {
+        paths.push({
+          params: { id: cluster.id },
+          props: { cluster, subTopic: sub, category: cat }
+        });
+      });
+    });
+  });
+  return paths;
+}
+
+export interface Props {
+  cluster: Cluster;
+  subTopic: SubTopic;
+  category: NavCategory;
+}
+
+const { cluster, subTopic, category } = Astro.props;
+
+// Select top 4 matching brands for this cluster
+const relevantBrands = brands.slice(0, 4);
+---
+
+<Layout
+  title={`${cluster.name} 深度知识集群与选型指南 | ${subTopic.title} - 机场online`}
+  description={`【机场online技术专题】深度剖析 ${cluster.name}：包含 ${cluster.description}。聚合 10 篇独立 SEO 权威解答、晚高峰实测指标、代表性机场推荐与蜂巢内链图谱。`}
+>
+  <!-- Breadcrumb -->
+  <nav class="flex items-center space-x-2 text-xs font-mono text-slate-400 mb-6 pb-3 border-b border-slate-800">
+    <a href="/" class="hover:text-cyan-400">首页</a>
+    <span>›</span>
+    <a href={category.slug} class="hover:text-cyan-400">{category.title}</a>
+    <span>›</span>
+    <a href={subTopic.slug} class="hover:text-cyan-400">{subTopic.title}</a>
+    <span>›</span>
+    <span class="text-white">{cluster.name}</span>
+  </nav>
+
+  <header class="bg-[#0b1322] border border-[#1f2e4a] rounded-2xl p-6 sm:p-8 mb-8">
+    <div class="flex items-center space-x-2 text-cyan-400 font-mono text-xs uppercase mb-2">
+      <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+      <span>Topic Cluster #{cluster.id} · 三级深度知识集群</span>
+    </div>
+    <h1 class="text-2xl sm:text-4xl font-extrabold text-white mb-3">
+      {cluster.name}
+    </h1>
+    <p class="text-slate-300 text-sm sm:text-base leading-relaxed max-w-3xl">
+      {cluster.description}。属于本站「{category.title} → {subTopic.title}」核心体系，旨在通过细粒度长尾搜索意图拆解与技术实测，为用户提供可验证、防封锁的高质量出海决策依据。
+    </p>
+  </header>
+
+  <!-- 10 SEO Articles Matrix for this Cluster -->
+  <section class="my-8">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-xl font-bold text-white flex items-center space-x-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
+        <span>本集群下辖 10 篇权威技术解答</span>
+      </h2>
+      <span class="text-xs font-mono text-slate-500">独立搜索意图 · 蜂巢内链节点</span>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {cluster.articles.map((art, idx) => (
+        <div class="bg-[#070c14] border border-slate-800 hover:border-cyan-500/50 p-4 rounded-xl flex flex-col justify-between transition-colors">
+          <div>
+            <div class="flex items-center justify-between text-xs font-mono text-slate-500 mb-2">
+              <span class="text-cyan-400 font-bold">文献 0{idx + 1}</span>
+              <span class="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-400">{art.intent}</span>
+            </div>
+            <h3 class="text-sm sm:text-base font-bold text-white hover:text-cyan-300 transition-colors mb-2">
+              <a href={`/articles/${art.slug}`}>{art.title}</a>
+            </h3>
+            <p class="text-xs text-slate-400 leading-relaxed mb-3">
+              核心搜索关键词：<code class="text-cyan-300 font-mono">{art.keyword}</code>。围绕用户实际痛点、参数设置与选型对比展开万字级权威解答。
+            </p>
+          </div>
+          <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs font-mono">
+            <span class="text-slate-500">机场online 深度审稿</span>
+            <a href={`/articles/${art.slug}`} class="text-cyan-400 hover:underline">
+              阅读完整报告 →
+            </a>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Recommended Brand Candidates for this Cluster -->
+  <section class="my-12 pt-8 border-t border-[#1f2e4a]">
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h2 class="text-xl font-bold text-white">本集群对口推荐机场标杆</h2>
+        <p class="text-xs text-slate-400 mt-1">根据专线延迟、协议支持与场景匹配度精选</p>
+      </div>
+      <a href="/brands" class="text-xs font-mono text-cyan-400 hover:underline">
+        查看全部 42 家机场 →
+      </a>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {relevantBrands.map((b) => (
+        <BrandCard brand={b} />
+      ))}
+    </div>
+  </section>
+</Layout>

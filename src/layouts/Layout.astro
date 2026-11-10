@@ -1,0 +1,190 @@
+---
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+
+export interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+  ogType?: string;
+  robots?: string;
+  schema?: Record<string, any>;
+  publishedTime?: string;
+  modifiedTime?: string;
+  author?: string;
+}
+
+const {
+  title,
+  description,
+  canonical,
+  ogType = 'website',
+  robots = 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
+  schema,
+  publishedTime,
+  modifiedTime,
+  author = '机场online 评测实验室'
+} = Astro.props;
+
+const siteName = '机场online - 2026 跨境网络可观测性与机场实测实验室';
+const domain = 'https://jichangtuijian.online';
+const fullTitle = title.includes('机场online') ? title : `${title} | 机场online`;
+
+// 严格保证 Canonical 为规范绝对地址，去除任何查询字符串和多余斜杠
+let cleanCanonical = canonical;
+if (!cleanCanonical) {
+  const pathname = Astro.url.pathname;
+  cleanCanonical = `${domain}${pathname === '/' ? '/' : pathname.replace(/\/$/, '')}`;
+} else if (!cleanCanonical.startsWith('http')) {
+  cleanCanonical = `${domain}${cleanCanonical.startsWith('/') ? '' : '/'}${cleanCanonical}`;
+}
+
+// 搜索引擎站长平台安全验证代码插槽 (如环境变量或全局配置提供则直接注入纯HTML)
+const googleVerification = import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION || '';
+const bingVerification = import.meta.env.PUBLIC_BING_SITE_VERIFICATION || '';
+const baiduVerification = import.meta.env.PUBLIC_BAIDU_SITE_VERIFICATION || '';
+const shenmaVerification = import.meta.env.PUBLIC_SHENMA_SITE_VERIFICATION || '';
+---
+
+<!doctype html>
+<html lang="zh-CN" class="dark scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/webp" href="/avatar.webp" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- SEO Meta Tags -->
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={cleanCanonical} />
+    <meta name="robots" content={robots} />
+
+    <!-- Search Engine Webmaster Verification Tags (预留插槽，填入即直接生效于源码) -->
+    {googleVerification && <meta name="google-site-verification" content={googleVerification} />}
+    {bingVerification && <meta name="msvalidate.01" content={bingVerification} />}
+    {baiduVerification && <meta name="baidu-site-verification" content={baiduVerification} />}
+    {shenmaVerification && <meta name="shenma-site-verification" content={shenmaVerification} />}
+
+    <!-- Open Graph -->
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={cleanCanonical} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:locale" content="zh_CN" />
+    <meta property="og:image" content="https://jichangtuijian.online/avatar.webp" />
+    {publishedTime && <meta property="article:published_time" content={publishedTime} />}
+    {modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
+    {author && <meta property="article:author" content={author} />}
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content="https://jichangtuijian.online/avatar.webp" />
+
+    <!-- Pagefind Assets for search -->
+    <link href="/pagefind/pagefind-ui.css" rel="stylesheet" />
+    <script src="/pagefind/pagefind-ui.js" is:inline></script>
+
+    <!-- Schema.org JSON-LD -->
+    {schema && (
+      <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+    )}
+    <!-- Global WebSite & Organization Schema -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://jichangtuijian.online/#website",
+          "name": "机场online",
+          "url": "https://jichangtuijian.online",
+          "description": "2026 跨境网络可观测性与机场实测实验室",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://jichangtuijian.online/?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        },
+        {
+          "@type": "Organization",
+          "@id": "https://jichangtuijian.online/#organization",
+          "name": "机场online 网络实验室",
+          "url": "https://jichangtuijian.online",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://jichangtuijian.online/avatar.webp"
+          }
+        }
+      ]
+    })} />
+  </head>
+  <body class="bg-[#070c14] text-slate-100 font-sans antialiased selection:bg-cyan-500/20 selection:text-cyan-300 min-h-screen flex flex-col">
+    <div class="fixed inset-0 pointer-events-none z-[-1] opacity-25">
+      <div class="absolute inset-0 bg-[linear-gradient(to_right,#1f2e4a15_1px,transparent_1px),linear-gradient(to_bottom,#1f2e4a15_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
+      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[60rem] h-[30rem] bg-cyan-500/10 blur-[120px] rounded-full"></div>
+    </div>
+
+    <Navbar />
+
+    <main class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" data-pagefind-body>
+      <slot />
+    </main>
+
+    <Footer />
+
+    <!-- Global search dialog -->
+    <div id="search-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+      <div class="bg-[#0d1524] border border-[#1f2e4a] rounded-xl w-full max-w-2xl max-h-[85vh] overflow-y-auto p-6 shadow-2xl relative">
+        <div class="flex items-center justify-between pb-4 border-b border-slate-800 mb-4">
+          <div class="flex items-center space-x-2 text-cyan-400 font-mono text-sm">
+            <span class="inline-block w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+            <span>全站静态全文检索 · Pagefind</span>
+          </div>
+          <button id="close-search" class="text-slate-400 hover:text-white px-2 py-1 text-sm rounded bg-slate-800">ESC 关闭</button>
+        </div>
+        <div id="pagefind-search"></div>
+      </div>
+    </div>
+
+    <script is:inline>
+      const modal = document.getElementById('search-modal');
+      const closeBtn = document.getElementById('close-search');
+      let pagefindInitialized = false;
+
+      function openSearch() {
+        if (modal) modal.classList.remove('hidden');
+        if (modal) modal.classList.add('flex');
+        if (!pagefindInitialized && typeof PagefindUI !== 'undefined') {
+          new PagefindUI({ element: "#pagefind-search", showSubResults: true, resetStyles: false });
+          pagefindInitialized = true;
+        }
+      }
+
+      function closeSearch() {
+        if (modal) {
+          modal.classList.add('hidden');
+          modal.classList.remove('flex');
+        }
+      }
+
+      document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+          e.preventDefault();
+          openSearch();
+        }
+        if (e.key === 'Escape') closeSearch();
+      });
+
+      if (closeBtn) closeBtn.addEventListener('click', closeSearch);
+      if (modal) {
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) closeSearch();
+        });
+      }
+      window.openGlobalSearch = openSearch;
+    </script>
+  </body>
+</html>

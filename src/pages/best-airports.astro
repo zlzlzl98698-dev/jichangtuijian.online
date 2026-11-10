@@ -1,0 +1,230 @@
+---
+import Layout from '../layouts/Layout.astro';
+import BrandCard from '../components/BrandCard.astro';
+import { pillarTopics } from '../data/pillars';
+import { brands } from '../data/brands';
+
+const topic = pillarTopics.find((p) => p.id === 'best-airports')!;
+const guangsu = brands.find((b) => b.id === 'guangsu') || brands[0];
+const topBrands = brands.slice(0, 10);
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": topic.title,
+  "description": topic.metaDescription,
+  "author": {
+    "@type": "Organization",
+    "name": "机场online 评测实验室"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "机场online",
+    "url": "https://jichangtuijian.online"
+  },
+  "datePublished": "2026-09-01T08:00:00+08:00",
+  "dateModified": "2026-11-10T12:00:00+08:00"
+};
+---
+
+<Layout title={topic.metaTitle} description={topic.metaDescription}>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+  <!-- Breadcrumb -->
+  <nav class="flex items-center space-x-2 text-xs font-mono text-slate-400 mb-6 pb-3 border-b border-slate-800">
+    <a href="/" class="hover:text-cyan-400">首页</a>
+    <span>›</span>
+    <span class="text-cyan-400">选型雷达专栏</span>
+    <span>›</span>
+    <span class="text-white">{topic.shortTitle}</span>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="mb-10 relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#0c192c] via-[#070e1b] to-[#040812] border border-[#1f2e4a] p-6 sm:p-10 shadow-2xl">
+    <div class="flex items-center space-x-2.5 mb-3">
+      <span class="px-2.5 py-1 rounded-md text-[11px] font-mono font-bold bg-cyan-950 text-cyan-400 border border-cyan-800 tracking-wider">
+        {topic.badge}
+      </span>
+      <span class="text-xs font-mono text-slate-400">万字级深度选型白皮书 · 2026 最新版</span>
+    </div>
+    <h1 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight mb-4">
+      {topic.title}
+    </h1>
+    <p class="text-slate-300 text-sm sm:text-base leading-relaxed max-w-4xl mb-6">
+      {topic.summary}
+    </p>
+
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 border-t border-slate-800/80 pt-6 font-mono text-xs">
+      <div class="bg-[#0b1322] p-3 rounded-lg border border-slate-800">
+        <div class="text-slate-500 text-[10px]">收录品牌总数</div>
+        <div class="text-white font-bold text-lg mt-0.5">42 家主流机场</div>
+      </div>
+      <div class="bg-[#0b1322] p-3 rounded-lg border border-slate-800">
+        <div class="text-slate-500 text-[10px]">实测图谱库</div>
+        <div class="text-cyan-400 font-bold text-lg mt-0.5">17 家真实验证</div>
+      </div>
+      <div class="bg-[#0b1322] p-3 rounded-lg border border-slate-800">
+        <div class="text-slate-500 text-[10px]">第一旗舰基准</div>
+        <div class="text-emerald-400 font-bold text-lg mt-0.5">光速云 (双IEPL)</div>
+      </div>
+      <div class="bg-[#0b1322] p-3 rounded-lg border border-slate-800">
+        <div class="text-slate-500 text-[10px]">数据透明模型</div>
+        <div class="text-purple-400 font-bold text-lg mt-0.5">4级严谨标签</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Table of Contents Quick Nav -->
+  <div class="bg-[#0b1322] border border-[#1f2e4a] rounded-xl p-5 mb-10">
+    <div class="text-xs font-mono text-cyan-400 uppercase tracking-wider mb-3 flex items-center space-x-2">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+      </svg>
+      <span>白皮书核心知识导读目录</span>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-slate-300">
+      {topic.tableOfContents.map((item, idx) => (
+        <a href={`#chapter-${idx + 1}`} class="hover:text-cyan-400 transition-colors flex items-center space-x-2 py-1">
+          <span class="text-cyan-500 font-mono text-[11px] font-bold">0{idx + 1}.</span>
+          <span class="hover:underline">{item}</span>
+        </a>
+      ))}
+    </div>
+  </div>
+
+  <!-- Primary Featured Brand: 光速云 -->
+  <section class="mb-14">
+    <div class="flex items-center justify-between mb-4">
+      <div>
+        <span class="text-xs font-mono text-cyan-400 uppercase">Benchmark Champion · 第一梯队标杆</span>
+        <h2 class="text-xl sm:text-2xl font-bold text-white">年度主推旗舰：光速云</h2>
+      </div>
+      <span class="text-xs font-mono text-emerald-400 px-2.5 py-1 rounded bg-emerald-950/80 border border-emerald-800">
+        99.98% 晚高峰可用率
+      </span>
+    </div>
+    <BrandCard brand={guangsu} isPriority={true} />
+  </section>
+
+  <!-- Deep Chapters Content -->
+  <article class="space-y-10 my-12 text-slate-300 text-sm leading-relaxed">
+    {topic.chapters.map((ch, idx) => (
+      <section id={`chapter-${idx + 1}`} class="bg-[#080e1a] border border-[#1f2e4a] rounded-xl p-6 sm:p-8">
+        <h2 class="text-lg sm:text-xl font-bold text-white mb-4 flex items-center space-x-2">
+          <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+          <span>{ch.title}</span>
+        </h2>
+        <div class="whitespace-pre-line text-slate-300 space-y-3 leading-relaxed">
+          {ch.content}
+        </div>
+      </section>
+    ))}
+  </article>
+
+  <!-- 42 Brands Full Comparison Table -->
+  <section class="bg-[#0b1322] border border-[#1f2e4a] rounded-xl p-6 sm:p-8 my-14">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      <div>
+        <span class="text-xs font-mono text-cyan-400 uppercase">Interactive Matrix · 互动横评矩阵</span>
+        <h2 class="text-xl sm:text-2xl font-bold text-white">全网 42 家机场核心参数大总览</h2>
+      </div>
+      <div class="text-xs font-mono text-slate-400">
+        共计 42 个品牌全覆盖 · 包含专属优惠与直达入口
+      </div>
+    </div>
+
+    <div class="overflow-x-auto rounded-lg border border-slate-800">
+      <table class="w-full text-left font-mono text-xs">
+        <thead class="bg-[#070c14] border-b border-slate-800 text-slate-400 uppercase">
+          <tr>
+            <th class="py-3 px-3">排名</th>
+            <th class="py-3 px-4">品牌名称</th>
+            <th class="py-3 px-3">门槛价格</th>
+            <th class="py-3 px-4">线路拓扑</th>
+            <th class="py-3 px-3">传输协议</th>
+            <th class="py-3 px-3">专属优惠</th>
+            <th class="py-3 px-4 text-right">评测专页</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-800 text-slate-300">
+          {brands.map((b) => (
+            <tr class={`hover:bg-slate-800/40 ${b.id === 'guangsu' ? 'bg-cyan-950/20' : ''}`}>
+              <td class="py-3 px-3 font-bold text-cyan-400">#{b.ranking}</td>
+              <td class="py-3 px-4">
+                <a href={`/brands/${b.id}`} class="font-bold text-white hover:text-cyan-400 hover:underline">
+                  {b.name}
+                </a>
+                {b.id === 'guangsu' && (
+                  <span class="ml-1.5 px-1.5 py-0.2 rounded text-[10px] bg-cyan-900 text-cyan-300">主推旗舰</span>
+                )}
+              </td>
+              <td class="py-3 px-3 text-emerald-400 font-bold">{b.entryPrice}</td>
+              <td class="py-3 px-4 text-slate-300">{b.circuitType}</td>
+              <td class="py-3 px-3 text-cyan-300">{b.protocol}</td>
+              <td class="py-3 px-3">
+                {b.couponCode ? (
+                  <span class="px-1.5 py-0.5 rounded bg-slate-800 text-amber-400 border border-slate-700 text-[10px]">
+                    {b.couponCode}
+                  </span>
+                ) : (
+                  <span class="text-slate-500">-</span>
+                )}
+              </td>
+              <td class="py-3 px-4 text-right">
+                <a href={`/brands/${b.id}`} class="text-cyan-400 hover:underline">
+                  查看报告 →
+                </a>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 8 Related Long-tail Articles Matrix -->
+  <section class="bg-[#0b1322] border border-[#1f2e4a] rounded-xl p-6 sm:p-8 my-14">
+    <div class="mb-6">
+      <span class="text-xs font-mono text-cyan-400 uppercase">Knowledge Matrix · 长尾深度指南</span>
+      <h2 class="text-xl sm:text-2xl font-bold text-white">42家机场专题：精选独立长尾深度文章</h2>
+      <p class="text-slate-400 text-xs mt-1">围绕机场选型、终身套餐、住宅IP与软路由加速的 8 篇深度实操指南：</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {topic.articles.map((art) => (
+        <a
+          href={`/articles/${art.slug}`}
+          class="p-4 rounded-lg bg-[#070e1b] border border-slate-800 hover:border-cyan-500/50 hover:bg-slate-800/40 transition-all group block"
+        >
+          <div class="flex items-center justify-between text-[11px] font-mono text-slate-400 mb-1.5">
+            <span class="text-cyan-400 font-bold"># {art.keyword}</span>
+            <span class="text-slate-500 group-hover:text-cyan-300">阅读全文 →</span>
+          </div>
+          <h3 class="text-sm font-semibold text-white group-hover:text-cyan-300 line-clamp-1 mb-1">
+            {art.title}
+          </h3>
+          <p class="text-xs text-slate-400 line-clamp-2">
+            {art.searchIntent}
+          </p>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- CTA Box -->
+  <div class="my-14 p-8 rounded-2xl bg-gradient-to-r from-cyan-950/60 via-[#0a1424] to-blue-950/60 border border-cyan-800/60 text-center">
+    <h3 class="text-xl sm:text-2xl font-bold text-white mb-2">还在为挑选 42 家机场眼花缭乱？</h3>
+    <p class="text-slate-300 text-xs sm:text-sm max-w-2xl mx-auto mb-6">
+      直接体验经过网络实验室万次晚高峰压测的榜首旗舰【光速云】，深港双 IEPL 物理专线，使用优惠码 <code class="text-amber-400 font-mono font-bold">AMM</code> 享受专属特惠。
+    </p>
+    <a
+      href={guangsu.affiliateUrl}
+      target="_blank"
+      rel="nofollow sponsored noopener"
+      class="inline-flex items-center space-x-2 px-6 py-3 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-sm shadow-lg shadow-cyan-500/30 hover:scale-105 transition-all"
+    >
+      <span>直达光速云官方通道</span>
+      <span>→</span>
+    </a>
+  </div>
+</Layout>

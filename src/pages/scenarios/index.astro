@@ -1,0 +1,69 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import BrandCard from '../../components/BrandCard.astro';
+import { brands } from '../../data/brands';
+import { navigationStructure } from '../../data/navigation';
+
+const scenarioNav = navigationStructure.find((n) => n.id === 'scenarios');
+const aiBrands = brands.filter((b) => b.id === 'guangsu' || b.id === 'sujie' || b.id === 'muguang' || b.id === 'yifan');
+---
+
+<Layout
+  title="专用场景加速指南 | ChatGPT / Claude / TikTok 跨境电商 / 4K 流媒体 - 机场online"
+  description="【业务赋能实操】针对 OpenAI ChatGPT 4o、Claude 3.5 Sonnet、TikTok 东南亚与美区直播带货、Netflix/Disney+ 4K 原生解锁的网络选型与节点排障方案。"
+>
+  <div class="mb-8">
+    <div class="text-xs font-mono text-purple-400 uppercase tracking-wider mb-2">
+      Scenarios & Productivity · 业务生产力专栏
+    </div>
+    <h1 class="text-3xl sm:text-4xl font-extrabold text-white">专用场景网络加速方案</h1>
+    <p class="text-slate-300 text-sm mt-2 max-w-3xl leading-relaxed">
+      日常翻墙只看网页，与生产力出海（AI 大模型高频调用、跨境电商推流）对网络的要求有着天壤之别。本专栏深入探讨 IP 纯净度、住宅 IP、原生出口与防风控封锁方案。
+    </p>
+
+    <!-- Subtopic Links -->
+    <div class="flex items-center space-x-3 mt-6">
+      <a href="/scenarios/ai" class="px-4 py-2 rounded-lg bg-[#0b1322] border border-[#1f2e4a] hover:border-cyan-500/60 text-slate-200 text-xs font-mono">
+        🤖 AI 大模型深度访问专题 (ChatGPT / Claude) →
+      </a>
+      <a href="/scenarios/streaming" class="px-4 py-2 rounded-lg bg-[#0b1322] border border-[#1f2e4a] hover:border-cyan-500/60 text-slate-200 text-xs font-mono">
+        🎬 跨境出海与 4K 流媒体专题 (TikTok / Netflix) →
+      </a>
+    </div>
+  </div>
+
+  <!-- Featured Scenario Brands -->
+  <section class="my-8">
+    <h2 class="text-xl font-bold text-white mb-4">场景推荐核心标杆</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {aiBrands.map((b) => (
+        <BrandCard brand={b} />
+      ))}
+    </div>
+  </section>
+
+  <!-- Clusters Section -->
+  {scenarioNav && (
+    <section class="bg-[#0b1322] border border-[#1f2e4a] rounded-xl p-6 my-10">
+      <h2 class="text-lg font-bold text-white mb-4">场景加速知识图谱 (40篇深度解答)</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {scenarioNav.subTopics.map((sub) => (
+          <div>
+            <h3 class="text-sm font-bold text-cyan-400 mb-2 font-mono">› {sub.title}</h3>
+            <ul class="space-y-1.5 text-xs text-slate-300">
+              {sub.clusters.flatMap((c) => c.articles).slice(0, 8).map((a) => (
+                <li class="flex items-center justify-between hover:text-cyan-300 py-0.5">
+                  <a href={`/articles/${a.slug}`} class="truncate pr-2 hover:text-cyan-400 hover:underline flex items-center space-x-1 text-slate-200">
+                    <span class="text-cyan-500 font-bold">·</span>
+                    <span class="truncate">{a.title}</span>
+                  </a>
+                  <span class="text-[10px] font-mono text-slate-500 shrink-0">{a.keyword}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </section>
+  )}
+</Layout>

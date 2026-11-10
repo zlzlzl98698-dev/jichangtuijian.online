@@ -1,0 +1,133 @@
+---
+import Layout from '../layouts/Layout.astro';
+import BrandCard from '../components/BrandCard.astro';
+import { pillarTopics } from '../data/pillars';
+import { brands } from '../data/brands';
+
+const topic = pillarTopics.find((p) => p.id === 'trial')!;
+const guangsu = brands.find((b) => b.id === 'guangsu') || brands[0];
+const wuyou = brands.find((b) => b.id === 'wuyou') || brands[1];
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": topic.title,
+  "description": topic.metaDescription,
+  "author": {
+    "@type": "Organization",
+    "name": "机场online 评测实验室"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "机场online",
+    "url": "https://jichangtuijian.online"
+  },
+  "datePublished": "2026-09-05T08:00:00+08:00",
+  "dateModified": "2026-11-10T12:00:00+08:00"
+};
+---
+
+<Layout title={topic.metaTitle} description={topic.metaDescription}>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+  <!-- Breadcrumb -->
+  <nav class="flex items-center space-x-2 text-xs font-mono text-slate-400 mb-6 pb-3 border-b border-slate-800">
+    <a href="/" class="hover:text-cyan-400">首页</a>
+    <span>›</span>
+    <span class="text-cyan-400">选型雷达专栏</span>
+    <span>›</span>
+    <span class="text-white">{topic.shortTitle}</span>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="mb-10 relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#0c192c] via-[#070e1b] to-[#040812] border border-[#1f2e4a] p-6 sm:p-10 shadow-2xl">
+    <div class="flex items-center space-x-2.5 mb-3">
+      <span class="px-2.5 py-1 rounded-md text-[11px] font-mono font-bold bg-emerald-950 text-emerald-400 border border-emerald-800 tracking-wider">
+        {topic.badge}
+      </span>
+      <span class="text-xs font-mono text-slate-400">零试错成本 · 2026 免费与 1 元试用精选</span>
+    </div>
+    <h1 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight mb-4">
+      {topic.title}
+    </h1>
+    <p class="text-slate-300 text-sm sm:text-base leading-relaxed max-w-4xl mb-6">
+      {topic.summary}
+    </p>
+
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 border-t border-slate-800/80 pt-6 font-mono text-xs">
+      <div class="bg-[#0b1322] p-3 rounded-lg border border-slate-800">
+        <div class="text-slate-500 text-[10px]">试错门槛</div>
+        <div class="text-emerald-400 font-bold text-lg mt-0.5">0 元 / 1 元</div>
+      </div>
+      <div class="bg-[#0b1322] p-3 rounded-lg border border-slate-800">
+        <div class="text-slate-500 text-[10px]">防刷防黑机制</div>
+        <div class="text-white font-bold text-lg mt-0.5">网关防刷隔离</div>
+      </div>
+      <div class="bg-[#0b1322] p-3 rounded-lg border border-slate-800">
+        <div class="text-slate-500 text-[10px]">退款保障时效</div>
+        <div class="text-cyan-400 font-bold text-lg mt-0.5">24 小时申诉</div>
+      </div>
+      <div class="bg-[#0b1322] p-3 rounded-lg border border-slate-800">
+        <div class="text-slate-500 text-[10px]">推荐试错方案</div>
+        <div class="text-purple-400 font-bold text-lg mt-0.5">按量或小额月付</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Deep Chapters -->
+  <article class="space-y-10 my-12 text-slate-300 text-sm leading-relaxed">
+    {topic.chapters.map((ch, idx) => (
+      <section class="bg-[#080e1a] border border-[#1f2e4a] rounded-xl p-6 sm:p-8">
+        <h2 class="text-lg sm:text-xl font-bold text-white mb-4 flex items-center space-x-2">
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          <span>{ch.title}</span>
+        </h2>
+        <div class="whitespace-pre-line text-slate-300 space-y-3 leading-relaxed">
+          {ch.content}
+        </div>
+      </section>
+    ))}
+  </article>
+
+  <!-- Best Low-Cost / Trial Recommendation Cards -->
+  <section class="my-14">
+    <div class="mb-6">
+      <span class="text-xs font-mono text-emerald-400 uppercase">Verified Platforms · 亲测低成本试错标杆</span>
+      <h2 class="text-xl sm:text-2xl font-bold text-white">低成本与试用体验推荐梯队</h2>
+      <p class="text-slate-400 text-xs mt-1">拒绝动辄上百元的年付套路，支持小额体验或按量付费的靠谱选择：</p>
+    </div>
+    <div class="space-y-6">
+      <BrandCard brand={guangsu} isPriority={true} />
+      <BrandCard brand={wuyou} />
+    </div>
+  </section>
+
+  <!-- 8 Related Long-tail Articles Matrix -->
+  <section class="bg-[#0b1322] border border-[#1f2e4a] rounded-xl p-6 sm:p-8 my-14">
+    <div class="mb-6">
+      <span class="text-xs font-mono text-cyan-400 uppercase">Knowledge Matrix · 长尾试用指南</span>
+      <h2 class="text-xl sm:text-2xl font-bold text-white">免费试用专题：精选独立长尾深度文章</h2>
+      <p class="text-slate-400 text-xs mt-1">围绕 0 元试用、1 元体验包、退款维权与压测 SOP 的 8 篇深度实操指南：</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {topic.articles.map((art) => (
+        <a
+          href={`/articles/${art.slug}`}
+          class="p-4 rounded-lg bg-[#070e1b] border border-slate-800 hover:border-emerald-500/50 hover:bg-slate-800/40 transition-all group block"
+        >
+          <div class="flex items-center justify-between text-[11px] font-mono text-slate-400 mb-1.5">
+            <span class="text-emerald-400 font-bold"># {art.keyword}</span>
+            <span class="text-slate-500 group-hover:text-emerald-300">阅读全文 →</span>
+          </div>
+          <h3 class="text-sm font-semibold text-white group-hover:text-emerald-300 line-clamp-1 mb-1">
+            {art.title}
+          </h3>
+          <p class="text-xs text-slate-400 line-clamp-2">
+            {art.searchIntent}
+          </p>
+        </a>
+      ))}
+    </div>
+  </section>
+</Layout>

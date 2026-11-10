@@ -1,0 +1,119 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { brands } from '../../data/brands';
+import { navigationStructure } from '../../data/navigation';
+
+const measuredBrands = brands.filter((b) => b.hasSpeedtestImage);
+const subTopic = navigationStructure[4].subTopics[1];
+---
+
+<Layout
+  title="晚高峰测速实验室与证据库 2026 | 16家真机测速图谱归档 - 机场online"
+  description="【真实数据存证】归档 2026 批次 16 家机场真机跑分大图。包含光速云、飞猫云、微风网络、星岛梦、二猫云、U1S1等高分辨率截图、丢包率、延迟抖动与UDP/NAT实测结果。"
+>
+  <!-- Breadcrumb -->
+  <nav class="flex items-center space-x-2 text-xs font-mono text-slate-400 mb-6 pb-3 border-b border-slate-800">
+    <a href="/" class="hover:text-cyan-400">首页</a>
+    <span>›</span>
+    <a href="/tech" class="hover:text-cyan-400">协议与网络实验室</a>
+    <span>›</span>
+    <span class="text-white">晚高峰测速实验室与证据库</span>
+  </nav>
+
+  <div class="mb-8">
+    <div class="text-xs font-mono text-emerald-400 uppercase tracking-wider mb-2">
+      Measurement Evidence · 实测图谱数据中心
+    </div>
+    <h1 class="text-3xl sm:text-4xl font-extrabold text-white">晚高峰测速实验室与原始证据库</h1>
+    <p class="text-slate-300 text-sm mt-2 max-w-3xl leading-relaxed">
+      本实验室所有 16 张测速截图均为 2026 批次真实机器人在多节点环境下的跑分快照。原始 PNG/JPG 图像均未经任何数值抹改，完整保留测试时间戳、线程数、丢包状态与 UDP 类型，作为客观事实存证。
+    </p>
+  </div>
+
+  <!-- 16 Measured Brands Visual Gallery -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-10">
+    {measuredBrands.map((b) => (
+      <div class="bg-[#0b1322] border border-[#1f2e4a] rounded-xl p-5 hover:border-cyan-500/50 transition-colors">
+        <div class="flex items-center justify-between mb-3 border-b border-slate-800 pb-2">
+          <div>
+            <span class="text-[10px] font-mono text-slate-500 uppercase">品牌存证 #{b.ranking}</span>
+            <h2 class="text-base font-bold text-white hover:text-cyan-400">
+              <a href={`/brands/${b.id}`}>{b.name}</a>
+            </h2>
+          </div>
+          <span class="text-[11px] font-mono text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800">
+            {b.testedAt || '2026-08-11'}
+          </span>
+        </div>
+
+        {b.speedtestImage && (
+          <div class="overflow-hidden rounded-lg border border-slate-800 bg-slate-950/80 mb-4">
+            <img
+              src={b.speedtestImage}
+              alt={`${b.name} 测速实测图`}
+              class="w-full h-64 object-cover object-top hover:scale-105 transition-transform duration-300 cursor-pointer"
+              loading="lazy"
+              onclick="window.open(this.src, '_blank')"
+            />
+          </div>
+        )}
+
+        <div class="grid grid-cols-2 gap-2 text-xs font-mono mb-3">
+          <div class="bg-[#070c14] p-2 rounded border border-slate-800">
+            <span class="text-[10px] text-slate-500 block">线路类型</span>
+            <span class="text-slate-200 truncate block">{b.circuitType}</span>
+          </div>
+          <div class="bg-[#070c14] p-2 rounded border border-slate-800">
+            <span class="text-[10px] text-slate-500 block">实测下载均值</span>
+            <span class="text-emerald-400 font-bold block">{b.speedtests[0]?.download || '高带宽'}</span>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between pt-2 border-t border-slate-800/80 text-xs">
+          <a href={`/brands/${b.id}`} class="text-slate-400 hover:text-white font-mono">
+            查看该品牌完整万字评测 →
+          </a>
+          {b.affiliateUrl && (
+            <a
+              href={b.affiliateUrl}
+              target="_blank"
+              rel="nofollow sponsored noopener"
+              class="text-cyan-400 hover:underline font-mono font-medium"
+            >
+              官网直达入口 ↗
+            </a>
+          )}
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <!-- Clusters Section -->
+  <section class="bg-[#0b1322] border border-[#1f2e4a] rounded-xl p-6 my-10">
+    <h2 class="text-lg font-bold text-white mb-4">测速可观测性方法论集群 (20篇专题)</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {subTopic.clusters.map((c) => (
+        <div class="border-t border-slate-800 pt-3">
+          <h3 class="font-mono text-xs font-bold text-cyan-400 uppercase mb-1">
+            <a href={`/clusters/${c.id}`} class="hover:underline flex items-center space-x-1">
+              <span>#{c.name}</span>
+              <span class="text-[10px] text-slate-500 font-normal">→ 完整集群</span>
+            </a>
+          </h3>
+          <p class="text-xs text-slate-400 mb-3">{c.description}</p>
+          <ul class="space-y-1.5 text-xs">
+            {c.articles.map((a) => (
+              <li class="text-slate-300 flex items-center justify-between hover:text-cyan-300 py-0.5">
+                <a href={`/articles/${a.slug}`} class="truncate pr-2 hover:text-cyan-400 hover:underline flex items-center space-x-1 text-slate-200">
+                  <span class="text-cyan-500 font-bold">›</span>
+                  <span class="truncate">{a.title}</span>
+                </a>
+                <span class="text-[10px] font-mono text-slate-500 shrink-0">{a.keyword}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,165 @@
+---
+import Layout from '../layouts/Layout.astro';
+import BrandCard from '../components/BrandCard.astro';
+import { pillarTopics } from '../data/pillars';
+import { brands } from '../data/brands';
+
+const topic = pillarTopics.find((p) => p.id === 'scam-radar')!;
+const guangsu = brands.find((b) => b.id === 'guangsu') || brands[0];
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": topic.title,
+  "description": topic.metaDescription,
+  "author": {
+    "@type": "Organization",
+    "name": "机场online 网络安全实验室"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "机场online",
+    "url": "https://jichangtuijian.online"
+  },
+  "datePublished": "2026-09-08T08:00:00+08:00",
+  "dateModified": "2026-11-10T12:00:00+08:00"
+};
+---
+
+<Layout title={topic.metaTitle} description={topic.metaDescription}>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+  <!-- Breadcrumb -->
+  <nav class="flex items-center space-x-2 text-xs font-mono text-slate-400 mb-6 pb-3 border-b border-slate-800">
+    <a href="/" class="hover:text-cyan-400">首页</a>
+    <span>›</span>
+    <span class="text-cyan-400">选型雷达专栏</span>
+    <span>›</span>
+    <span class="text-white">{topic.shortTitle}</span>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="mb-10 relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#1c0c16] via-[#10070e] to-[#080307] border border-rose-900/40 p-6 sm:p-10 shadow-2xl">
+    <div class="flex items-center space-x-2.5 mb-3">
+      <span class="px-2.5 py-1 rounded-md text-[11px] font-mono font-bold bg-rose-950 text-rose-400 border border-rose-800 tracking-wider">
+        {topic.badge}
+      </span>
+      <span class="text-xs font-mono text-slate-400">资金风控避险 · 2026 跑路预警雷达</span>
+    </div>
+    <h1 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight mb-4">
+      {topic.title}
+    </h1>
+    <p class="text-slate-300 text-sm sm:text-base leading-relaxed max-w-4xl mb-6">
+      {topic.summary}
+    </p>
+
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 border-t border-rose-950/80 pt-6 font-mono text-xs">
+      <div class="bg-[#12070e] p-3 rounded-lg border border-rose-900/40">
+        <div class="text-slate-500 text-[10px]">历史跑路复盘</div>
+        <div class="text-rose-400 font-bold text-lg mt-0.5">30+ 典型案</div>
+      </div>
+      <div class="bg-[#12070e] p-3 rounded-lg border border-rose-900/40">
+        <div class="text-slate-500 text-[10px]">高危异动指标</div>
+        <div class="text-amber-400 font-bold text-lg mt-0.5">7 项红色预警</div>
+      </div>
+      <div class="bg-[#12070e] p-3 rounded-lg border border-rose-900/40">
+        <div class="text-slate-500 text-[10px]">资金避险法则</div>
+        <div class="text-cyan-400 font-bold text-lg mt-0.5">月付 + 双活容灾</div>
+      </div>
+      <div class="bg-[#12070e] p-3 rounded-lg border border-rose-900/40">
+        <div class="text-slate-500 text-[10px]">稳定运行标杆</div>
+        <div class="text-emerald-400 font-bold text-lg mt-0.5">光速云全内网</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 7 Warning Signs Visual Panel -->
+  <div class="bg-[#10070e] border border-rose-900/40 rounded-xl p-6 sm:p-8 mb-12">
+    <div class="flex items-center space-x-2 text-rose-400 font-mono text-xs uppercase mb-4">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+      </svg>
+      <span>机场失联前必定呈现的 7 大红色预警信号</span>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+      <div class="p-3.5 rounded-lg bg-[#180914] border border-rose-900/30">
+        <div class="font-bold text-rose-300 mb-1">1. 突然推出超低价终身付 / 骨折年付</div>
+        <div class="text-slate-400">例如平时月付 20 元，突然打出 88 元终身 2000G，这是极高概率的卷款跑路前兆。</div>
+      </div>
+      <div class="p-3.5 rounded-lg bg-[#180914] border border-rose-900/30">
+        <div class="font-bold text-rose-300 mb-1">2. 官方群组开启全员禁言 / 关闭评论</div>
+        <div class="text-slate-400">Telegram 交流群被解散或强行全员禁言，剥夺用户的维权发声渠道。</div>
+      </div>
+      <div class="p-3.5 rounded-lg bg-[#180914] border border-rose-900/30">
+        <div class="font-bold text-rose-300 mb-1">3. 工单客服彻底失联 / 超过一周未读</div>
+        <div class="text-slate-400">运维团队已停止日常维护，后台技术人员已处于离职或弃管状态。</div>
+      </div>
+      <div class="p-3.5 rounded-lg bg-[#180914] border border-rose-900/30">
+        <div class="font-bold text-rose-300 mb-1">4. 节点大面积爆红，公告推诿拖延超2周</div>
+        <div class="text-slate-400">IDC 物理服务器因欠费断约被拔线，机主无力续交机房租金。</div>
+      </div>
+      <div class="p-3.5 rounded-lg bg-[#180914] border border-rose-900/30">
+        <div class="font-bold text-rose-300 mb-1">5. 官网频繁被墙且无法提供跳转镜像</div>
+        <div class="text-slate-400">缺乏多域名反代和智能 DNS 调度能力，已无资金维护防封体系。</div>
+      </div>
+      <div class="p-3.5 rounded-lg bg-[#180914] border border-rose-900/30">
+        <div class="font-bold text-rose-300 mb-1">6. 支付方式退化为个人二维码或强制USDT</div>
+        <div class="text-slate-400">企业商户支付网关因投诉过多被风控冻结，转用不可撤销的虚拟币收款。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Deep Chapters Content -->
+  <article class="space-y-10 my-12 text-slate-300 text-sm leading-relaxed">
+    {topic.chapters.map((ch, idx) => (
+      <section class="bg-[#0c050b] border border-[#2a1322] rounded-xl p-6 sm:p-8">
+        <h2 class="text-lg sm:text-xl font-bold text-white mb-4 flex items-center space-x-2">
+          <span class="w-2 h-2 rounded-full bg-rose-400"></span>
+          <span>{ch.title}</span>
+        </h2>
+        <div class="whitespace-pre-line text-slate-300 space-y-3 leading-relaxed">
+          {ch.content}
+        </div>
+      </section>
+    ))}
+  </article>
+
+  <!-- Benchmark Safe Airport Card: 光速云 -->
+  <section class="my-14">
+    <div class="mb-6">
+      <span class="text-xs font-mono text-emerald-400 uppercase">Long-Term Resilience · 长期稳健运营标杆</span>
+      <h2 class="text-xl sm:text-2xl font-bold text-white">避开跑路风险：首选重资产投入的合规旗舰</h2>
+      <p class="text-slate-400 text-xs mt-1">具备多条跨国内网物理专线、雄厚造血能力与长期口碑验证：</p>
+    </div>
+    <BrandCard brand={guangsu} isPriority={true} />
+  </section>
+
+  <!-- 8 Related Long-tail Articles Matrix -->
+  <section class="bg-[#10070e] border border-rose-900/40 rounded-xl p-6 sm:p-8 my-14">
+    <div class="mb-6">
+      <span class="text-xs font-mono text-rose-400 uppercase">Knowledge Matrix · 长尾避险指南</span>
+      <h2 class="text-xl sm:text-2xl font-bold text-white">跑路预警专题：精选独立长尾深度文章</h2>
+      <p class="text-slate-400 text-xs mt-1">围绕历史案例复盘、庞氏骗局数学模型、双机场热备容灾的 8 篇深度实操指南：</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {topic.articles.map((art) => (
+        <a
+          href={`/articles/${art.slug}`}
+          class="p-4 rounded-lg bg-[#180914] border border-rose-900/30 hover:border-rose-500/50 hover:bg-slate-800/40 transition-all group block"
+        >
+          <div class="flex items-center justify-between text-[11px] font-mono text-slate-400 mb-1.5">
+            <span class="text-rose-400 font-bold"># {art.keyword}</span>
+            <span class="text-slate-500 group-hover:text-rose-300">阅读全文 →</span>
+          </div>
+          <h3 class="text-sm font-semibold text-white group-hover:text-rose-300 line-clamp-1 mb-1">
+            {art.title}
+          </h3>
+          <p class="text-xs text-slate-400 line-clamp-2">
+            {art.searchIntent}
+          </p>
+        </a>
+      ))}
+    </div>
+  </section>
+</Layout>

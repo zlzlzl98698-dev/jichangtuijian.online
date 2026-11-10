@@ -1,0 +1,45 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="404 - 页面未找到 | 机场online"
+  description="抱歉，您访问的页面不存在或已被移除。请返回机场online首页或使用全站搜索。"
+  robots="noindex, follow"
+>
+  <div class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4 py-16">
+    <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-[#0b1322] border border-cyan-800/60 shadow-xl shadow-cyan-500/10 mb-6">
+      <span class="text-4xl font-mono font-black text-cyan-400">404</span>
+    </div>
+    
+    <h1 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight mb-3">
+      未找到该页面 (Page Not Found)
+    </h1>
+    
+    <p class="text-slate-400 text-sm max-w-md mx-auto mb-8 leading-relaxed">
+      您请求的 URL 路径不存在，可能已被永久迁移或链接已失效。您可以尝试全局搜索或返回核心推荐榜单。
+    </p>
+
+    <div class="flex flex-wrap items-center justify-center gap-3 font-mono text-xs">
+      <a
+        href="/"
+        class="px-5 py-2.5 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold transition-all shadow-md shadow-cyan-500/20"
+      >
+        ← 返回网站首页
+      </a>
+      <a
+        href="/best-airports"
+        class="px-5 py-2.5 rounded-lg bg-[#0b1322] hover:bg-slate-800 border border-slate-700 text-slate-300 transition-colors"
+      >
+        查看42家机场全景选型 →
+      </a>
+      <button
+        type="button"
+        onclick="window.openGlobalSearch && window.openGlobalSearch()"
+        class="px-5 py-2.5 rounded-lg bg-[#0f1a2e] hover:bg-slate-800 border border-[#1f2e4a] text-cyan-400 transition-colors"
+      >
+        🔍 快捷全局搜索
+      </button>
+    </div>
+  </div>
+</Layout>

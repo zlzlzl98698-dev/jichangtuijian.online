@@ -1,0 +1,28 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import BrandCard from '../../components/BrandCard.astro';
+import { brands } from '../../data/brands';
+
+const verifiedBrands = brands.filter((b) => b.hasSpeedtestImage);
+---
+
+<Layout
+  title="42家机场品牌全景评测库 | 机场online - 真实测速证据与规格档案"
+  description="收录国内外42家主流机场服务商，包含光速云、暮光加速、飞猫云、微风网络等梯队。提供16家实测真机图谱、价格表、协议类型与流媒体解锁深度审计。"
+>
+  <div class="mb-8">
+    <div class="text-xs font-mono text-cyan-400 uppercase tracking-wider mb-2">
+      Brand Directory · 品牌可观测性档案
+    </div>
+    <h1 class="text-3xl sm:text-4xl font-extrabold text-white">42 家机场品牌全景评测库</h1>
+    <p class="text-slate-300 text-sm mt-2 max-w-3xl">
+      坚持实测数据透明化准则。所有品牌按真实综合表现、专线品质、运维年限以及证据链完整度进行梯队分级。拒绝一刀切营销，为您的网络选型提供严谨的技术参考。
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    {brands.map((b) => (
+      <BrandCard brand={b} />
+    ))}
+  </div>
+</Layout>

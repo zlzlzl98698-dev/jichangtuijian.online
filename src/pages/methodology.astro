@@ -1,0 +1,80 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="评测与测速方法论 | 机场online - 科学、严谨、多维度的跨境网络质检标准"
+  description="【测评方法论】揭秘机场online实验室的压测环境：晚高峰 20:30-22:30 测试时间窗口、丢包率与抖动计算模型、四级数据透明度标签标准。"
+>
+  <nav class="flex items-center space-x-2 text-xs font-mono text-slate-400 mb-6 pb-3 border-b border-slate-800">
+    <a href="/" class="hover:text-cyan-400">首页</a>
+    <span>›</span>
+    <span class="text-white">评测与测速方法论</span>
+  </nav>
+
+  <div class="max-w-4xl mx-auto my-8">
+    <header class="mb-10 text-center">
+      <div class="inline-block px-3 py-1 rounded-full bg-cyan-950 text-cyan-400 border border-cyan-800 text-xs font-mono mb-3">
+        Testing Methodology · 科学质检体系
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-white mb-3">机场评测与测速方法论白皮书</h1>
+      <p class="text-slate-400 text-sm font-mono max-w-2xl mx-auto">
+        拒绝主观玄学，基于确定性网络指标与晚高峰严苛压测的四级质检模型。
+      </p>
+    </header>
+
+    <div class="space-y-8 text-slate-300 text-sm leading-relaxed">
+      <!-- Section 1 -->
+      <section class="bg-[#0b1322] border border-[#1f2e4a] rounded-xl p-6 sm:p-8">
+        <h2 class="text-xl font-bold text-white mb-3 flex items-center space-x-2">
+          <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+          <span>一、测试时间窗口与网络环境</span>
+        </h2>
+        <div class="space-y-2">
+          <p><strong>1. 测试时间窗口</strong>：所有基准测速严格限定在 <strong>每日 20:30 - 22:30（中国标准时间 CST）</strong> 进行。该时段为全国家庭宽带用网最高峰期，国际出口网关负载达 95% 以上，只有专线才能呈现真实成色。</p>
+          <p><strong>2. 客户端基准</strong>：统一采用最新版 <strong>Clash Verge Rev（Mihomo 内核）</strong> 与 <strong>Sing-box 核心</strong>，开启 TUN 虚拟网卡模式，排除浏览器本地代理插拔干扰。</p>
+          <p><strong>3. 测试机房网络</strong>：涵盖中国电信 1000M 家宽、中国联通 500M 光纤与中国移动 1000M 骨干网，全面排查运营商互联壁垒。</p>
+        </div>
+      </section>
+
+      <!-- Section 2 -->
+      <section class="bg-[#0b1322] border border-[#1f2e4a] rounded-xl p-6 sm:p-8">
+        <h2 class="text-xl font-bold text-white mb-3 flex items-center space-x-2">
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          <span>二、四级数据透明度标签模型 (Four-Tier Data Transparency)</span>
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 font-mono text-xs">
+          <div class="p-4 rounded-lg bg-[#070e1a] border border-emerald-900/50">
+            <div class="text-emerald-400 font-bold mb-1">[measured 实测数据]</div>
+            <p class="text-slate-300">经由本站探针在指定晚高峰真实测试并保存有原始图像的指标，真实度最高。</p>
+          </div>
+          <div class="p-4 rounded-lg bg-[#070e1a] border border-blue-900/50">
+            <div class="text-blue-400 font-bold mb-1">[vendor 官方数据]</div>
+            <p class="text-slate-300">来源于服务商官网公开套餐表、官方公告或工单客服明确答复的数据。</p>
+          </div>
+          <div class="p-4 rounded-lg bg-[#070e1a] border border-amber-900/50">
+            <div class="text-amber-400 font-bold mb-1">[commercial 商业标注]</div>
+            <p class="text-slate-300">明确标注带有专属优惠码（如 AMM）或官方推荐入口的商业返利链接。</p>
+          </div>
+          <div class="p-4 rounded-lg bg-[#070e1a] border border-purple-900/50">
+            <div class="text-purple-400 font-bold mb-1">[editorial 综合评估]</div>
+            <p class="text-slate-300">由资深网络架构师基于运营年限、历史工单口碑与架构拓扑得出的综合判定。</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 3 -->
+      <section class="bg-[#0b1322] border border-[#1f2e4a] rounded-xl p-6 sm:p-8">
+        <h2 class="text-xl font-bold text-white mb-3 flex items-center space-x-2">
+          <span class="w-2 h-2 rounded-full bg-purple-400"></span>
+          <span>三、流媒体与 AI 大模型原生解锁评判准则</span>
+        </h2>
+        <ul class="space-y-2 list-disc pl-5">
+          <li><strong>Netflix</strong>：必须支持非自制剧播放（如绝命毒师等版权剧集），仅能看自制剧不计入全解锁。</li>
+          <li><strong>ChatGPT</strong>：要求原生通过 Cloudflare Turnstile 验证，不报 1020 拒绝访问且无频繁人机验证。</li>
+          <li><strong>Disney+</strong>：要求稳定 4K HDR 串流，不出现 Error 73 地区受限。</li>
+        </ul>
+      </section>
+    </div>
+  </div>
+</Layout>
